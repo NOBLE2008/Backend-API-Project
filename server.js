@@ -10,6 +10,7 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
+//Always store sensitive info like Secret key, Database Password, API Keys in the environment variables
 dbConnect(process.env.DATABASE)
 
 const port = process.env.PORT || 3000;
