@@ -81,18 +81,32 @@ exports.updateEntireUser = catchAsync(async (req, res, next) => {
 });
 
 exports.signUp = catchAsync(async (req, res, next) => {
+  console.log(process.env.JWT_SECRET);
   const User = await Users.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
   });
-  const email = User.email;
-  const user = await Users.find({ email });
+  const token = await User.generateToken();
   res.status(200).json({
     status: 'Success',
-    data: {
-      user,
-    },
+    token: token
   });
 });
+
+exports.changePassword = catchAsync(async (req, res, next) => {
+  const {id} = req.user
+  const {password, newPassword} = req.body;
+  if(!password ||!newPassword){
+    return next(new AppError('Please provide your current password and new password', 400));
+  }
+  const user = await Users.findById(id).select('+password');
+ if(!(await user.correctPassword(password, user.password))){
+   return next(new AppError('Incorrect password provided', 401));
+}
+
+user.password =  newPassword;
+user.passwordChangedAt = Date.now();
+await user.save();
+})

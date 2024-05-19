@@ -38,6 +38,16 @@ const handleValidationError = (err, res) => {
   return sendErrorProd(error, res);
 };
 
+const handleTokenExpired = (err, res) => {
+  const error = new AppError('Session has expired', 401);
+  return sendErrorProd(error, res);
+}
+
+const handleTokenError = (err, res) => {
+  const error = new AppError('Invalid Token. Try logging in again', 401);
+  return sendErrorProd(error, res);
+}
+
 const errorMiddleware = (err, req, res, next) => {
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || 500;
@@ -47,10 +57,14 @@ const errorMiddleware = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
     if (err.name === 'CastError') {
       return handleCastError(res);
-    } else if (err.code === 11000) {
+    } if (err.code === 11000) {
       return handleDuplicateFields(res);
-    }else if(err.name === 'ValidationError'){
+    } if(err.name === 'ValidationError'){
       return handleValidationError(err, res)
+    } if(err.name === 'TokenExpiredError'){
+      return handleTokenExpired(err, res)
+    } if(err.name === 'JsonWebTokenError'){
+      return handleTokenError(err, res)
     }
     sendErrorProd(err, res);
   }
