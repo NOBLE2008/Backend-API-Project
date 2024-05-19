@@ -46,7 +46,11 @@ const userSchema = new mongoose.Schema({
     permissions: {
         type: [String],
         default: []
-    }
+    },
+    passwordChangedAt: {
+        type: Date,
+        default: Date.now()
+    },
 })
 
 userSchema.pre('save', async function(next){
