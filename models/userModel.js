@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Provide a password']
+        required: [true, 'Provide a password'],
+        select: false
     },
     confirmPassword: {
         type: String,
@@ -31,7 +32,8 @@ const userSchema = new mongoose.Schema({
             },
             message: 'Password and Confirm Password must be the same'
         },
-        required: [true, 'Confirm password field is required']
+        required: [true, 'Confirm password field is required'],
+        select: false
     },
     role: {
         type: String,
@@ -47,11 +49,6 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.pre(/^find/, function (next) {
-    this.select('-password')
-    next();
-  });
-  
 userSchema.pre('save', async function(next){
     if(!this.isModified('password')) return next()
     
@@ -64,7 +61,12 @@ userSchema.methods.correctPassword = async function(candidatePassword, userPassw
     return await bcrypt.compare(candidatePassword, userPassword)
 }
 
-userSchema.methods.generateToken = async function(){
+userSchema.methods.passwordChangedAfter = function(JWTTimestamp){
+        const changedTimestamp = this.passwordChangedAt.getTime() / 1000
+        return JWTTimestamp < changedTimestamp
+}
+
+userSchema.methods.generateToken = async function(id){
     const token = jwt.sign({id: this._id}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     })
