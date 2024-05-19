@@ -97,16 +97,21 @@ exports.signUp = catchAsync(async (req, res, next) => {
 
 exports.changePassword = catchAsync(async (req, res, next) => {
   const {id} = req.user
+  console.log(id)
   const {password, newPassword} = req.body;
   if(!password ||!newPassword){
     return next(new AppError('Please provide your current password and new password', 400));
   }
   const user = await Users.findById(id).select('+password');
- if(!(await user.correctPassword(password, user.password))){
+ if(!(await user.correctPassword(password))){
    return next(new AppError('Incorrect password provided', 401));
 }
 
 user.password =  newPassword;
 user.passwordChangedAt = Date.now();
 await user.save();
+res.status(200).json({
+  status: 'success',
+  message: 'Password changed successfully'
+})
 })
