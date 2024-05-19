@@ -9,11 +9,10 @@ exports.isAuth = catchAsync(async (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     const user = await User.findById(decoded.id);
     if(await user.passwordChangedAt){
         return next(new AppError("Password has been changed recently. Login to regain access", 401));
     }
-    req.user = decoded.id;
+    req.user = decoded;
     next();
 });
