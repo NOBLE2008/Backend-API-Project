@@ -1,6 +1,5 @@
 const fs = require('fs');
-const dotenv = require('dotenv').config({ path: './config.env' })
-const mongoose = require('mongoose');
+const dotenv = require('dotenv').config()
 const dbConnect = require('../config/dbConnect');
 const Tours = require('../models/tourModel');
 const Users = require('../models/userModel');
@@ -12,6 +11,7 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'),
 );
 
+
 const admin = {
   name: process.env.ADMIN_NAME,
   email: process.env.ADMIN_EMAIL,
@@ -19,7 +19,7 @@ const admin = {
   password: process.env.ADMIN_PASSWORD,
   confirmPassword: process.env.ADMIN_CONFIRMPASSWORD,
   role: process.env.ADMIN_ROLE,
-  permissions: process.env.ADMIN_PERMISSIONS
+  permissions: ['Super Administrator'],
 }
 
 //Delete Tours from DB

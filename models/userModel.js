@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
         default: 'Customer'
     },
     permissions: {
-        type: [String],
+        type: Array,
         default: []
     },
     passwordChangedAt: {
