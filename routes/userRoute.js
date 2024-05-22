@@ -4,10 +4,7 @@ const {
   signUp,
   login,
   changePassword,
-<<<<<<< HEAD
   forgotPassword,
-=======
->>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
 } = require('../controller/authController');
 const {
   isAuth,

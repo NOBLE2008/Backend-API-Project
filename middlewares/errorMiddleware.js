@@ -6,7 +6,6 @@ const sendErrorProd = (err, res) =>
     message: err.message,
     fields: err.fields || null
   });
-
 const sendErrorDev = (err, res) =>
   res.status(err.statusCode).json({
     status: err.status,

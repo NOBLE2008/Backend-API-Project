@@ -11,8 +11,6 @@ const Oauth2_Client = new OAuth2(
     process.env.CLIENT_SECRET
 )
 
-console.log(process.env.REFRESH)
-
 Oauth2_Client.setCredentials({
     refresh_token: process.env.REFRESH
 })
