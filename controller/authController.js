@@ -11,6 +11,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password', 400));
   }
   const user = await Users.findOne({ email }).select('+password');
+  console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
   }
@@ -20,6 +21,22 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const userTest = await Users.findById(id).select('+active');
+  if (!userTest) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+
+  userTest.active = false;
+  await userTest.save();
+  res.status(204).json({
+    status: 'Success',
+    message: 'User deleted successfully',
+  });
+})
+
 
 
 exports.signUp = catchAsync(async (req, res, next) => {

@@ -47,6 +47,11 @@ const handleTokenError = (err, res) => {
   return sendErrorProd(error, res);
 }
 
+const handleJWTMalformedError = (err, res) => {
+  const error = new AppError('Invalid Token. Try logging in again', 401);
+  return sendErrorProd(error, res);
+}
+
 const errorMiddleware = (err, req, res, next) => {
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || 500;
@@ -64,6 +69,8 @@ const errorMiddleware = (err, req, res, next) => {
       return handleTokenExpired(err, res)
     } if(err.name === 'JsonWebTokenError'){
       return handleTokenError(err, res)
+    }if(err.message === 'jwt malformed'){
+      return handleJWTMalformedError(err, res)
     }
     sendErrorProd(err, res);
   }
