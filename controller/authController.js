@@ -92,7 +92,6 @@ exports.signUp = catchAsync(async (req, res, next) => {
   const token = await User.generateToken();
   res.status(200).json({
     status: 'Success',
-<<<<<<< HEAD
     token: token,
   });
 });
@@ -143,9 +142,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     message: 'Token sent to email',
-=======
     token: token
->>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
   });
 });
 

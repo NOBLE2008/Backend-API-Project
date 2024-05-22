@@ -24,9 +24,6 @@ router.get(
 router.post('/sign-up', signUp);
 router.post('/login', login);
 router.patch('/change-password', isAuth, changePassword);
-<<<<<<< HEAD
-router.post('/forgot-password', forgotPassword);
-=======
->>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
+router.post('/forgot-password', forgotPassword)
 
 module.exports = router;
