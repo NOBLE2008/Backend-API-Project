@@ -92,6 +92,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   const token = await User.generateToken();
   res.status(200).json({
     status: 'Success',
+<<<<<<< HEAD
     token: token,
   });
 });
@@ -142,5 +143,29 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     message: 'Token sent to email',
+=======
+    token: token
+>>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
   });
 });
+
+exports.changePassword = catchAsync(async (req, res, next) => {
+  const {id} = req.user
+  console.log(id)
+  const {password, newPassword} = req.body;
+  if(!password ||!newPassword){
+    return next(new AppError('Please provide your current password and new password', 400));
+  }
+  const user = await Users.findById(id).select('+password');
+ if(!(await user.correctPassword(password))){
+   return next(new AppError('Incorrect password provided', 401));
+}
+
+user.password =  newPassword;
+user.passwordChangedAt = Date.now();
+await user.save();
+res.status(200).json({
+  status: 'success',
+  message: 'Password changed successfully'
+})
+})

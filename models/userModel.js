@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
+<<<<<<< HEAD
     passwordResetToken: {
         type: String,
         default: '',
@@ -60,6 +61,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: undefined
     },
+=======
+>>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
 })
 
 userSchema.pre('save', async function(next){
@@ -74,6 +77,7 @@ userSchema.methods.correctPassword = async function(candidatePassword){
     return await bcrypt.compare(candidatePassword, this.password)
 }
 
+<<<<<<< HEAD
 userSchema.methods.generatePasswordResetToken = async function(){
     const resetToken = crypto.randomBytes(32).toString('hex')
 
@@ -83,6 +87,8 @@ userSchema.methods.generatePasswordResetToken = async function(){
     return resetToken
 }
 
+=======
+>>>>>>> 62c2e4c180b1a16d004142496027d2b9e0c206cf
 userSchema.methods.passwordChangedAfter = function(JWTTimestamp){
         const changedTimestamp = this.passwordChangedAt.getTime() / 1000
         return JWTTimestamp < changedTimestamp
