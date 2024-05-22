@@ -1,12 +1,13 @@
 const express = require('express');
 const {
-  getAllUsers,
   signUp,
   login,
   changePassword,
   forgotPassword,
   resetPassword,
 } = require('../controller/authController');
+
+const { getAllUsers, updateEntireUser } = require('../controller/userController');
 const {
   isAuth,
   isAuthAdmin,
@@ -25,7 +26,8 @@ router.get(
 router.post('/sign-up', signUp);
 router.post('/login', login);
 router.patch('/change-password', isAuth, changePassword);
-router.post('/forgot-password', forgotPassword)
-router.post('/reset-password/:token', resetPassword);
+router.post('/forgot-password', forgotPassword);
+router.patch('/reset-password/:token', resetPassword);
+router.post('/update-user', isAuth, updateEntireUser)
 
 module.exports = router;
