@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const Users = require('../models/userModel');
 const APIFeatures = require('../utils/APIFeatures');
 const catchAsync = require('../utils/catchAsync');
@@ -130,7 +131,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('There is no user with this email', 404));
   }
   const token = await user.generatePasswordResetToken();
-  const resetUrl = `http://localhost:${process.env.PORT}/api/v2/reset-password/${token}`;
+  const resetUrl = `http://localhost:${process.env.PORT}/api/v2/users/reset-password/${token}`;
   const emailText = `A password reset has been initiated. click on the link below to reset your password. ${resetUrl}`;
   const emailSubject = 'Password Reset';
   const emailHtml = `<h1 style="color: blue;">Password reset</h1>
@@ -141,8 +142,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await emailUser(req, res, next);
   res.status(200).json({
     status: 'Success',
-    message: 'Token sent to email',
-    token: token
+    message: 'Token sent to email'
   });
 });
 
@@ -165,4 +165,31 @@ res.status(200).json({
   status: 'success',
   message: 'Password changed successfully'
 })
+})
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const {token} = req.params;
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  const {newPassword} = req.body;
+  const user = await Users.findOne({passwordResetToken: hashedToken}).select('+password');
+  console.log(user)
+  if(!user){
+    return next(new AppError('Invalid token', 400));
+  }
+  if(Date.now() > user.passwordResetExpires){
+    return next(new AppError('Password reset timeout try again.', 400));
+  }
+  if(!newPassword){
+    return next(new AppError('Please provide your new password', 400));
+  }
+  user.password =  newPassword;
+  user.passwordChangedAt = Date.now();
+  user.passwordResetToken = '';
+  user.passwordResetExpires = undefined;
+  console.log(user)
+  await user.save();
+  res.status(200).json({
+    status:'success',
+    message: 'Password changed successfully'
+  })
 })

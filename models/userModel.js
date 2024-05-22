@@ -87,6 +87,8 @@ userSchema.methods.passwordChangedAfter = function(JWTTimestamp){
         return JWTTimestamp < changedTimestamp
 }
 
+
+// eslint-disable-next-line no-unused-vars
 userSchema.methods.generateToken = async function(id){
     const token = jwt.sign({id: this._id}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN

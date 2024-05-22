@@ -5,6 +5,7 @@ const {
   login,
   changePassword,
   forgotPassword,
+  resetPassword,
 } = require('../controller/authController');
 const {
   isAuth,
@@ -25,5 +26,6 @@ router.post('/sign-up', signUp);
 router.post('/login', login);
 router.patch('/change-password', isAuth, changePassword);
 router.post('/forgot-password', forgotPassword)
+router.post('/reset-password/:token', resetPassword);
 
 module.exports = router;

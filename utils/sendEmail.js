@@ -38,7 +38,7 @@ exports.sendEmail = (recipient, subject, text, html, response) => async (req, re
         // send mail with defined transport object
         
         const mailOptions = {
-            from: 'nobleben2008@gmail.com', // sender address
+            from: 'Noble Web Solutions', // sender address
             to: recipient, // list of receivers
             subject: subject, // Subject line
             text: text, // plain text body
