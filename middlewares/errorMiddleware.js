@@ -1,11 +1,12 @@
 const AppError = require('../utils/appError');
+const Sessions = require('../models/sessionModel');
 
-const sendErrorProd = (err, res) =>
+const sendErrorProd = (err, res) => 
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
     fields: err.fields || null
-  });
+  })
 const sendErrorDev = (err, res) =>
   res.status(err.statusCode).json({
     status: err.status,
@@ -37,7 +38,8 @@ const handleValidationError = (err, res) => {
   return sendErrorProd(error, res);
 };
 
-const handleTokenExpired = (err, res) => {
+const handleTokenExpired = async (err, res, req) => {
+  await Sessions.deleteMany({jtok: req.token});
   const error = new AppError('Session has expired', 401);
   return sendErrorProd(error, res);
 }
@@ -66,7 +68,7 @@ const errorMiddleware = (err, req, res, next) => {
     } if(err.name === 'ValidationError'){
       return handleValidationError(err, res)
     } if(err.name === 'TokenExpiredError'){
-      return handleTokenExpired(err, res)
+      return handleTokenExpired(err, res, req)
     } if(err.name === 'JsonWebTokenError'){
       return handleTokenError(err, res)
     }if(err.message === 'jwt malformed'){

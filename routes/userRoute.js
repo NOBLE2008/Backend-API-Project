@@ -6,6 +6,8 @@ const {
   forgotPassword,
   resetPassword,
   deleteUser,
+  logOutUser,
+  getLoggedInUser,
 } = require('../controller/authController');
 
 const { getAllUsers, updateEntireUser } = require('../controller/userController');
@@ -28,5 +30,7 @@ router.patch('/reset-password/:token', resetPassword);
 router.post('/update-user', isAuth, updateEntireUser)
 // eslint-disable-next-line no-unused-expressions
 router.delete('/delete-user', isAuth, deleteUser)
+router.get('/get-logged-in-user', isAuth, getLoggedInUser)
+router.delete('/logout-device', isAuth, logOutUser)
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');

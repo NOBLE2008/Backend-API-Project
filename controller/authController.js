@@ -1,8 +1,11 @@
+const os = require('os')
 const crypto = require('crypto');
 const Users = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const { sendEmail } = require('../utils/sendEmail');
+const Sessions = require('../models/sessionModel');
+const { cookieRes } = require('../utils/cookieRes');
 
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -11,14 +14,19 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password', 400));
   }
   const user = await Users.findOne({ email }).select('+password');
-  console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
   }
   const token = await user.generateToken();
+    await Sessions.create({
+      jtok: token,
+      ip: req.ip,
+      device: os.hostname(),
+      email: req.body.email,
+      date: Date.now()
+    })
   res.status(200).json({
-    status: 'Success',
-    token,
+    status: 'Success'
   });
 });
 
@@ -48,11 +56,30 @@ exports.signUp = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
   const token = await User.generateToken();
+
+  await Sessions.create({
+    jtok: token,
+    ip: req.ip,
+    device: os.hostname(),
+    email: req.body.email,
+    date: Date.now(),
+  })
   res.status(200).json({
-    status: 'Success',
-    token: token,
+    status: 'Success'
   });
 });
+
+exports.getLoggedInUser = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const user = await Users.findById(id);
+  const session = await Sessions.find({email: user.email}).select('-_id -__v');
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      session: session
+    }
+  })
+})
 
 exports.changePassword = catchAsync(async (req, res, next) => {
   const { id } = req.user;
@@ -148,5 +175,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status:'success',
     message: 'Password changed successfully'
+  })
+})
+exports.logOutUser = catchAsync(async (req, res, next) => {
+  const {ip} = req.body;
+  await Sessions.deleteMany({ip})
+  res.status(200).json({
+    status: 'Success',
+    message: 'Device logged out successfully'
   })
 })
