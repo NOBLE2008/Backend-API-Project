@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser')
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
@@ -16,6 +17,7 @@ const app = express();
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
 app.use(helmet());
+app.use(cookieParser())
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {

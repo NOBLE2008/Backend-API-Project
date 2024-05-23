@@ -6,12 +6,11 @@ const Sessions = require('../models/sessionModel');
 
 exports.isAuth = catchAsync(async (req, res, next) => {
   if (
-    !req.headers.authorization ||
-    !req.headers.authorization.startsWith('Bearer')
+    !req.cookies.jwt
   ) {
     return next(new AppError('You are not authorized', 401));
   }
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.cookies.jwt;
   req.token = token;
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const user = await User.findById(decoded.id);
