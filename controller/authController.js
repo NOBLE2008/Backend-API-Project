@@ -25,6 +25,7 @@ exports.login = catchAsync(async (req, res, next) => {
       email: req.body.email,
       date: Date.now()
     })
+  cookieRes(res, token);
   res.status(200).json({
     status: 'Success'
   });
@@ -64,6 +65,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     email: req.body.email,
     date: Date.now(),
   })
+  cookieRes(res, token);
   res.status(200).json({
     status: 'Success'
   });
