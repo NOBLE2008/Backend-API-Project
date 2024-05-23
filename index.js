@@ -24,11 +24,12 @@ if (process.env.NODE_ENV === 'development') {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 100,
+  max: 10,
   windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!'
+  message: 'Too many requests attempts, please try again in an hour maximum.'
 });
-app.use('/api', limiter);
+app.use('/api/v2/users/login', limiter);
+app.use('/api/v2/users/sign-up', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
