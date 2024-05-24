@@ -95,7 +95,7 @@ exports.changePassword = catchAsync(async (req, res, next) => {
       ),
     );
   }
-  const user = await Users.findById(id).select('+password');
+  const user = await Users.findById(id).select('+password +passwordChangedAt');
   if (!(await user.correctPassword(password))) {
     return next(new AppError('Incorrect password provided', 401));
   }
@@ -132,32 +132,12 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.changePassword = catchAsync(async (req, res, next) => {
-  const {id} = req.user
-  console.log(id)
-  const {password, newPassword} = req.body;
-  if(!password ||!newPassword){
-    return next(new AppError('Please provide your current password and new password', 400));
-  }
-  const user = await Users.findById(id).select('+password');
- if(!(await user.correctPassword(password))){
-   return next(new AppError('Incorrect password provided', 401));
-}
-
-user.password =  newPassword;
-user.passwordChangedAt = Date.now();
-await user.save();
-res.status(200).json({
-  status: 'success',
-  message: 'Password changed successfully'
-})
-})
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const {token} = req.params;
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   const {newPassword} = req.body;
-  const user = await Users.findOne({passwordResetToken: hashedToken}).select('+password');
+  const user = await Users.findOne({passwordResetToken: hashedToken}).select('+password +passwordChangedAt +passwordResetExpires +PasswordResetToken');
   console.log(user)
   if(!user){
     return next(new AppError('Invalid token', 400));
