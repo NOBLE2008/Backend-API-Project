@@ -48,6 +48,13 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Tour Description is required'],
     },
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'A tour must have at least one guide'],
+      }
+    ],
     imageCover: {
       type: String,
       default: 'default-img.jpg',
