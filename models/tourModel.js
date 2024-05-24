@@ -67,6 +67,20 @@ const tourSchema = new mongoose.Schema(
         message: 'Discount price ({VALUE}) cannot be greater than price'
       }
     },
+    locations: {
+      type: [
+        {
+          coordinates: [Number],
+          address: String,
+          description: String,
+          day: {
+            type: Date,
+            default: Date.now(),
+          },
+        }
+      ],
+      required: [true, 'A tour must have at least one location'],
+    },
     slug: String,
     secret: {
       type: Boolean,

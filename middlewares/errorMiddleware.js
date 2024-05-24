@@ -16,7 +16,7 @@ const sendErrorDev = (err, res) =>
   });
 
 const handleCastError = (res) => {
-  const error = new AppError("Tour wasn't Found.", 400);
+  const error = new AppError("Invalid Request Format", 400);
   return sendErrorProd(error, res);
 };
 
@@ -55,6 +55,7 @@ const handleJWTMalformedError = (err, res) => {
 }
 
 const errorMiddleware = (err, req, res, next) => {
+  console.log(err);
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || 500;
   console.log(res.statusCode);

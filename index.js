@@ -14,9 +14,10 @@ const userRouter = require('./routes/userRoute');
 
 const app = express();
 
-// 1) GLOBAL MIDDLEWARES
+
 // Set security HTTP headers
 app.use(helmet());
+// 1) GLOBAL MIDDLEWARES
 app.use(cookieParser())
 
 // Development logging
@@ -38,7 +39,6 @@ app.use(express.json({ limit: '10kb' }));
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
-
 // Data sanitization against XSS
 app.use(xss());
 

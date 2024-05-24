@@ -10,7 +10,7 @@ const {
   getLoggedInUser,
 } = require('../controller/authController');
 
-const { getAllUsers, updateEntireUser } = require('../controller/userController');
+const { getAllUsers, updateEntireUser, getUserById } = require('../controller/userController');
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');
@@ -21,6 +21,11 @@ router.get(
   '/',
   isAuth,
   getAllUsers,
+);
+router.get(
+  '/:id',
+  isAuth,
+  getUserById,
 );
 router.post('/sign-up', signUp);
 router.post('/login', login);
