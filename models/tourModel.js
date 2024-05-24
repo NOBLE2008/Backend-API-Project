@@ -51,7 +51,7 @@ const tourSchema = new mongoose.Schema(
     guides: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
+        ref: 'Users',
         required: [true, 'A tour must have at least one guide'],
       }
     ],
