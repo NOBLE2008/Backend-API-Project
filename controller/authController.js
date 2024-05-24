@@ -6,6 +6,7 @@ const AppError = require('../utils/appError');
 const { sendEmail } = require('../utils/sendEmail');
 const Sessions = require('../models/sessionModel');
 const { cookieRes } = require('../utils/cookieRes');
+const fs = require('fs');
 
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -66,62 +67,20 @@ exports.signUp = catchAsync(async (req, res, next) => {
     email: req.body.email,
     date: Date.now(),
   })
-  const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Welcome to Our Online Shop!</title>
-      <style>
-          /* Welcome email styles */
-          body {
-              font-family: Arial, sans-serif;
-              background-color: #f5f5f5;
-              margin: 0;
-              padding: 0;
-          }
-          .container {
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-              background-color: #ffffff;
-              border-radius: 8px;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          }
-          h1 {
-              color: #333;
-          }
-          p {
-              color: #555;
-          }
-          .button {
-              display: inline-block;
-              padding: 10px 20px;
-              background-color: #007bff;
-              color: #ffffff;
-              text-decoration: none;
-              border-radius: 4px;
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <h1>Welcome to Our Online Shop!</h1>
-          <p>Thank you for joining us. We're excited to have you as part of our community.</p>
-          <p>Explore our latest products, exclusive offers, and more. If you have any questions, feel free to reach out to our support team.</p>
-          <p>Happy shopping!</p>
-          <p><a class="button" href="https://yourwebsite.com">Visit Our Shop</a></p>
-      </div>
-  </body>
-  </html>`
   const emailSubject = 'Welcome to Kaitind Resturant!';
   const emailText = `Welcome to Our Online Shop!
   Thank you for joining us. We're excited to have you as part of our community.
   Explore our latest products, exclusive offers, and more. If you have any questions, feel free to reach out to our support team.
   Happy shopping!`
-  const emailHtml = html;
-  const emailUser = sendEmail(email, emailSubject, emailText, emailHtml);
-  await emailUser(req, res, next);
+  fs.readFile(`${__dirname}/../Emails/welcome.html`, 'utf8', async (err, data) => {
+    const emailUser = sendEmail(email, emailSubject, emailText, data);
+    await emailUser(req, res, next);
+
+    if(err){
+      console.log(err)
+      return next(new AppError("Something went really wrong. Try again.", 500));
+    }
+  });
   cookieRes(res, token);
   res.status(200).json({
     status: 'Success'
