@@ -67,7 +67,7 @@ exports.aggregateMonthly = catchAsync(async (req, res, next) => {
 //Get tour by Id
 exports.getTourById = catchAsync(async (req, res, next) => {
     const {id} = req.params;
-    const tour = await Tours.findById(id);
+    const tour = await Tours.findById(id).populate('guides');
     if(!tour){
       return next(new AppError('Tour wasn,t found', 404))
     }
@@ -89,7 +89,7 @@ exports.updateEntireTour = catchAsync(async (req, res, next) => {
     const tour = await Tours.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    });
+    }).populate('guides');
     res.status(200).json({
       status: 'Success',
       data: {
@@ -100,7 +100,7 @@ exports.updateEntireTour = catchAsync(async (req, res, next) => {
 
 //Post new tour
 exports.addNewTour = catchAsync(async (req, res, next) => {
-    const tour = await Tours.create(req.body);
+    const tour = (await Tours.create(req.body)).populate('guides');
     res.status(200).json({
       status: 'Success',
       data: {
@@ -124,8 +124,8 @@ exports.updateTourPartially = catchAsync(async (req, res, next) => {
     await Tours.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    });
-    const newTour = await Tours.findById(id);
+    })
+    const newTour = await Tours.findById(id).populate('guides');;
     res.status(200).json({
       status: 'Success',
       data: {
