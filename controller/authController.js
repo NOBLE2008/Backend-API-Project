@@ -1,12 +1,12 @@
 const os = require('os')
+const fs = require('fs');
 const crypto = require('crypto');
 const Users = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const { sendEmail } = require('../utils/sendEmail');
 const Sessions = require('../models/sessionModel');
-const { cookieRes } = require('../utils/cookieRes');
-const fs = require('fs');
+const { cookieRes } = require('../utils/cookieRes')
 
 
 exports.login = catchAsync(async (req, res, next) => {
