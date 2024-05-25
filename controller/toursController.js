@@ -25,7 +25,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
   const tours = await features.query.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
-  });
+  })
   res.status(200).json({
     status: 'Success',
     currentPage: page,
@@ -72,6 +72,9 @@ exports.getTourById = catchAsync(async (req, res, next) => {
     const {id} = req.params;
     const tour = await Tours.findById(id).populate({
       path: 'guides',
+      select: '-__v -passwordChangedAt',
+    }).populate({
+      path: 'reviews',
       select: '-__v -passwordChangedAt',
     });
     if(!tour){

@@ -104,6 +104,12 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secret: { $ne: true } });
   next();
 });
+
+tourSchema.virtual('reviews', {
+  ref: 'Reviews',
+  foreignField: 'tour',
+  localField: '_id',
+})
 // Document Middleware. runs before the .save() and .create()
 tourSchema.pre('save', function (next) {
   this.slug = this.name.toLowerCase();
