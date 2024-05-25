@@ -5,8 +5,8 @@ const { createReview, getAllReviews, updateReview, deleteReview } = require('../
 const router = express.Router({ mergeParams: true });
 
 router.get('/', isAuth, getAllReviews);
+router.post('/', isAuth, createReview);
 router.delete('/:reviewId', isAuth, deleteReview);
 router.patch('/:id', updateReview)
-router.post('/:tourId', isAuth, createReview);
 
 module.exports = router;
