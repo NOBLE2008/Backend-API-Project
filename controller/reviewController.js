@@ -20,10 +20,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
   exports.getAllReviews = catchAsync(async (req, res, next) => {
     const { tourId } = req.params;
-    const reviews = await Reviews.find({ tour: tourId }).populate({
-      path: 'user',
-      select: '_id name photo',
-    });
+    const reviews = await Reviews.find({ tour: tourId })
     res.status(200).json({
       status:'success',
       data: {
@@ -36,10 +33,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
     const { reviewId } = req.params;
     const {id} = req.user;
 
-    const review = await Reviews.findById(reviewId).populate({
-      path: 'user',
-      select: '_id name photo',
-    })
+    const review = await Reviews.findById(reviewId)
     if (!review) {
       return next(new AppError('Review not found', 404));
     }
