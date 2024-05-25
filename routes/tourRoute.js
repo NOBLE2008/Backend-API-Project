@@ -15,6 +15,8 @@ const { isAuth } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
+router.use('/:tourId/reviews', require('./reviewRoute'));
+
 router.get('my-tours', isAuth, myTours);
 // router.param('id');
 
