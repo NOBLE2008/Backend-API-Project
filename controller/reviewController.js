@@ -36,7 +36,10 @@ exports.createReview = catchAsync(async (req, res, next) => {
     const { reviewId } = req.params;
     const {id} = req.user;
 
-    const review = await Reviews.findById(reviewId)
+    const review = await Reviews.findById(reviewId).populate({
+      path: 'user',
+      select: '_id name photo',
+    })
     if (!review) {
       return next(new AppError('Review not found', 404));
     }
