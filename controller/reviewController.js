@@ -20,7 +20,10 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
   exports.getAllReviews = catchAsync(async (req, res, next) => {
     const { tourId } = req.params;
-    const reviews = await Reviews.find({ tour: tourId });
+    const reviews = await Reviews.find({ tour: tourId }).populate({
+      path: 'user',
+      select: '_id name photo',
+    });
     res.status(200).json({
       status:'success',
       data: {
@@ -37,7 +40,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
     if (!review) {
       return next(new AppError('Review not found', 404));
     }
-    
+
     if(review.user.toString()!== id.toString()) {
       return next(new AppError('You are not authorized to update this review as you are not the person who made it', 401));
     }
