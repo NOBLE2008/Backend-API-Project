@@ -16,3 +16,14 @@ exports.createReview = catchAsync(async (req, res, next) => {
       },
     });
   });
+
+  exports.getAllReviews = catchAsync(async (req, res, next) => {
+    const { tourId } = req.params;
+    const reviews = await Reviews.find({ tour: tourId });
+    res.status(200).json({
+      status:'success',
+      data: {
+        reviews,
+      },
+    });
+  });
