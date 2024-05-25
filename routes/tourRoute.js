@@ -8,10 +8,14 @@ const {
   updateTourPartially,
   aggregate,
   aggregateMonthly,
+  myTours,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
+const { isAuth } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+
+router.get('my-tours', isAuth, myTours);
 // router.param('id');
 
 //Route for top-best-affordable tours

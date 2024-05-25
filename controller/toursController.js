@@ -148,3 +148,15 @@ exports.updateTourPartially = catchAsync(async (req, res, next) => {
       },
     });
   });
+
+  
+exports.myTours = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const tours = await Tours.find({guides: { $in: [id] }}).select('-guides');
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      tours,
+    },
+  })
+})

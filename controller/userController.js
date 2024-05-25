@@ -2,7 +2,6 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
 const Users = require('../models/userModel');
-const Tours = require('../models/tourModel');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
@@ -47,17 +46,6 @@ exports.getUserById = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-exports.myTours = catchAsync(async (req, res, next) => {
-  const { id } = req.user;
-  const tours = await Tours.find({guides: { $in: [id] }}).select('-guides');
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      tours,
-    },
-  })
-})
 
 exports.updateEntireUser = catchAsync(async (req, res, next) => {
   const { id } = req.user;
