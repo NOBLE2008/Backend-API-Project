@@ -28,7 +28,7 @@ exports.deleteOne = (Model) =>
   });
 
 
-exports.updateReview = (Model) =>
+exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const { reviewId } = req.params;
     const { id } = req.user;
@@ -56,3 +56,15 @@ exports.updateReview = (Model) =>
       },
     });
   });
+
+  exports.getAll = (Model) =>
+    catchAsync(async (req, res, next) => {
+        const { tourId } = req.params;
+        const reviews = await Model.find({ tour: tourId })
+        res.status(200).json({
+          status:'success',
+          data: {
+            reviews,
+          },
+        });
+      });
