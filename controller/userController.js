@@ -53,6 +53,7 @@ exports.updateEntireUser = catchAsync(async (req, res, next) => {
     return next(new AppError('Tour wasn,t found', 404));
   }
 
+
   const excludedFields = ['password', 'confirmPassword', 'role', 'permissions', 'passwordChangedAt', 'passwordResetToken', 'passwordResetExpires'];
   excludedFields.map((el) => delete req.body[el]);
   // eslint-disable-next-line no-constant-condition, no-cond-assign
@@ -68,3 +69,17 @@ exports.updateEntireUser = catchAsync(async (req, res, next) => {
     message: 'User updated successfully',
   });
 });
+
+exports.myInfo = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const userTest = await Users.findById(id);
+  if (!userTest) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      user: userTest,
+    },
+  })
+})
