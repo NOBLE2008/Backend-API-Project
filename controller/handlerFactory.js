@@ -33,8 +33,6 @@ exports.updateReview = (Model) =>
     const { reviewId } = req.params;
     const { id } = req.user;
 
-    console.log(reviewId);
-
     const review = await Model.findById(reviewId);
     if (!review) {
       return next(new AppError('Review not found', 404));
