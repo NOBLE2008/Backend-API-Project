@@ -1,7 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const Reviews = require("../models/reviewModel");
 const AppError = require("../utils/appError");
-const { deleteOne } = require("./handlerFactory");
+const { deleteOne, updateReview } = require("./handlerFactory");
 
 exports.createReview = catchAsync(async (req, res, next) => {
     const { tourId } = req.params;
@@ -30,27 +30,6 @@ exports.createReview = catchAsync(async (req, res, next) => {
     });
   });
 
-  exports.updateReview = catchAsync(async (req, res, next) => {
-    const { reviewId } = req.params;
-    const {id} = req.user;
-
-    const review = await Reviews.findById(reviewId)
-    if (!review) {
-      return next(new AppError('Review not found', 404));
-    }
-
-    if(review.user.toString()!== id.toString()) {
-      return next(new AppError('You are not authorized to update this review as you are not the person who made it', 401));
-    }
-    review.review = req.body.review || review.review;
-    review.rating = req.body.rating || review.rating;
-    await review.save();
-    res.status(200).json({
-      status:'success',
-      data: {
-        review,
-      },
-    });
-  });
+  exports.updateReview = updateReview(Reviews)
 
   exports.deleteReview = deleteOne(Reviews);
