@@ -27,7 +27,6 @@ exports.deleteOne = (Model) =>
     });
   });
 
-
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const { reviewId } = req.params;
@@ -57,14 +56,31 @@ exports.updateOne = (Model) =>
     });
   });
 
-  exports.getAll = (Model) =>
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const { tourId } = req.params;
+    const reviews = await Model.find({ tour: tourId });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        reviews,
+      },
+    });
+  });
+
+  exports.createOne = (Model) =>
     catchAsync(async (req, res, next) => {
         const { tourId } = req.params;
-        const reviews = await Model.find({ tour: tourId })
-        res.status(200).json({
+        const review = await Model.create({
+          user: req.user.id,
+          tour: tourId,
+          review: req.body.review,
+          rating: req.body.rating,
+        });
+        res.status(201).json({
           status:'success',
           data: {
-            reviews,
+            review,
           },
         });
       });
