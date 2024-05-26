@@ -11,7 +11,7 @@ const {
   myTours,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
-const { isAuth } = require('../middlewares/authMiddleware');
+const { isAuth, isAuthAdmin } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
@@ -27,15 +27,15 @@ router.route('/aggregate').get(aggregate);
 router.route('/aggregate-monthly/:year').get(aggregateMonthly);
 
 //Route handler for / endpoint
-router.route('/').get(getAllTours).post(addNewTour);
+router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
 //Route handler for /:id endpoint
 router
   .route('/:id')
   .get(getTourById)
-  .put(updateEntireTour)
-  .delete(deleteATour)
-  .patch(updateTourPartially);
+  .put(isAuth, isAuthAdmin, updateEntireTour)
+  .delete(isAuth, isAuthAdmin, deleteATour)
+  .patch(isAuth, isAuthAdmin, updateTourPartially);
 
 //export router function
 module.exports = router;

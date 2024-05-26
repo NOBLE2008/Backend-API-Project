@@ -7,4 +7,4 @@ const { deleteOne, updateOne, getAll, createOne } = require("./handlerFactory");
 
   exports.updateReview = updateOne(Reviews)
 
-  exports.deleteReview = deleteOne(Reviews);
+  exports.deleteReview = deleteOne(Reviews)
