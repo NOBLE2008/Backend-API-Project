@@ -1,11 +1,13 @@
 const fs = require('fs');
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
 const dbConnect = require('../config/dbConnect');
 const Tours = require('../models/tourModel');
 const Users = require('../models/userModel');
 const Reviews = require('../models/reviewModel');
 
 dbConnect(process.env.DATABASE);
+
+dotenv.config();
 
 // Read JSON File
 const tours = JSON.parse(
