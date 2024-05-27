@@ -41,11 +41,10 @@ reviewSchema.statics.calcAverageRating = async function(tourId) {
             }
         }
     ])
-    const tours = await Tours.findByIdAndUpdate(tourId, {
+    await Tours.findByIdAndUpdate(tourId, {
         ratingsAverage: stats[0].avgRating,
         ratingsQuantity: stats[0].nRating
     })
-    console.log(tours)
 }
 
 reviewSchema.pre(/^find/, function(next) {
