@@ -105,6 +105,8 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+tourSchema.index({ slug: 1 }, {price: 1}, {ratingsAverage: -1});
+
 tourSchema.virtual('reviews', {
   ref: 'Reviews',
   foreignField: 'tour',
