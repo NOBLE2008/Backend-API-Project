@@ -20,12 +20,22 @@ const handleCastError = (res) => {
   return sendErrorProd(error, res);
 };
 
-const handleDuplicateFields = (res) => {
-  const error = new AppError(
-    'User with specified email already exists',
-    401,
-  );
+const handleDuplicateFields = (res, err) => {
+  if(err.keyPattern.email){
+    const error = new AppError(
+      'User with specified email already exists',
+      401,
+    );
+    
   return sendErrorProd(error, res);
+  }if(!err.keyPattern.email){
+    const error = new AppError(
+      'Invalid Input. Try Again',
+      401,
+    );
+    
+  return sendErrorProd(error, res);
+  }
 };
 
 const handleValidationError = (err, res) => {
@@ -65,7 +75,7 @@ const errorMiddleware = (err, req, res, next) => {
     if (err.name === 'CastError') {
       return handleCastError(res);
     } if (err.code === 11000) {
-      return handleDuplicateFields(res);
+      return handleDuplicateFields(res, err);
     } if(err.name === 'ValidationError'){
       return handleValidationError(err, res)
     } if(err.name === 'TokenExpiredError'){

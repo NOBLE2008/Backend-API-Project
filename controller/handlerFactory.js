@@ -7,7 +7,7 @@ exports.deleteOne = (Model) =>
     const { reviewId } = req.params;
     const { id } = req.user;
 
-    const review = await Model.findById(reviewId);
+    const review = await Model.findOneAndDelete({_id: reviewId});
     if (!review) {
       return next(new AppError('Review not found', 404));
     }
@@ -19,8 +19,6 @@ exports.deleteOne = (Model) =>
         ),
       );
     }
-
-    await Model.findByIdAndDelete(reviewId);
 
     res.status(204).json({
       status: 'success',
