@@ -3,6 +3,7 @@ const dotenv = require('dotenv').config()
 const dbConnect = require('../config/dbConnect');
 const Tours = require('../models/tourModel');
 const Users = require('../models/userModel');
+const Reviews = require('../models/reviewModel');
 
 dbConnect(process.env.DATABASE);
 
@@ -27,6 +28,7 @@ const deleteExistingTours = async () => {
   try {
     await Tours.deleteMany();
     await Users.deleteMany();
+    await Reviews.deleteMany();
     console.log('All Data is sucessfully deleted from your Database');
   } catch (err) {
     console.log(err);

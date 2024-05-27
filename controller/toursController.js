@@ -118,6 +118,9 @@ exports.addNewTour = catchAsync(async (req, res, next) => {
       path: 'guides',
       select: '-__v -passwordChangedAt',
     });
+    tour.ratingsAverage = 0
+    tour.ratingsQuantity = 0
+    await tour.save()
     res.status(200).json({
       status: 'Success',
       data: {

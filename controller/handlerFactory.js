@@ -1,3 +1,4 @@
+const Tours = require('../models/tourModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -71,6 +72,10 @@ exports.getAll = (Model) =>
   exports.createOne = (Model) =>
     catchAsync(async (req, res, next) => {
         const { tourId } = req.params;
+        const tour = await Tours.findById(tourId);
+        if (!tour) {
+          return next(new AppError('The tour you\'re trying to make review for doesn\'t exist', 404));
+        }
         const review = await Model.create({
           user: req.user.id,
           tour: tourId,
