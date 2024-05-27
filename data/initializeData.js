@@ -5,9 +5,8 @@ const Tours = require('../models/tourModel');
 const Users = require('../models/userModel');
 const Reviews = require('../models/reviewModel');
 
+dotenv.config()
 dbConnect(process.env.DATABASE);
-
-dotenv.config();
 
 // Read JSON File
 const tours = JSON.parse(
