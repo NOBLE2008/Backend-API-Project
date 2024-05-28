@@ -152,6 +152,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({
     status: 'success',
+    distanceUnit: unit,
     tourLength: tours.length,
     tours,
   });
@@ -199,6 +200,7 @@ exports.distanceCheck = catchAsync(async (req, res, next) => {
 res.status(200).json({
   status: 'Success',
   data: {
+    unit: unit,
     distances,
   },
 })
