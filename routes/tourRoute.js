@@ -31,7 +31,7 @@ router.route('/aggregate-monthly/:year').get(aggregateMonthly);
 router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
 
-router.get('/get-within/distance/:distance/point/:latlng', getToursWithin)
+router.get('/get-within/distance/:distance/unit/:unit/point/:latlng', getToursWithin)
 //Route handler for /:id endpoint
 router
   .route('/:id')

@@ -130,8 +130,18 @@ exports.addNewTour = catchAsync(async (req, res, next) => {
 });
 
 exports.getToursWithin = catchAsync(async (req, res, next) => {
-  const { distance, latlng } = req.params;
-  const radians = distance/3959;
+  const { distance, latlng, unit } = req.params;
+  if(!distance || !latlng || !unit){
+    return next(new AppError('Invalid Request. Try Again', 400))
+  }
+  let radians;
+  if(unit === 'mi'){
+    radians = distance/3959
+  }else if(unit === 'km'){
+    radians = distance/6371
+  }else{
+    return next(new AppError('Invalid Request. Try Again', 400))
+  }
   const [lat, lng] = latlng.split(',');
   const tours = await Tours.find({
     startLocation: {
