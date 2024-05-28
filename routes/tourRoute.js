@@ -33,7 +33,7 @@ router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
 
 router.get('/get-within/distance/:distance/unit/:unit/point/:latlng', getToursWithin)
-router.get('/distance-check/point/:lnglat', distanceCheck);
+router.get('/distance-check/point/:lnglat/unit/:unit', distanceCheck);
 //Route handler for /:id endpoint
 router
   .route('/:id')
