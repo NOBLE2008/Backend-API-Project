@@ -131,16 +131,16 @@ exports.addNewTour = catchAsync(async (req, res, next) => {
 
 exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
-  if(!distance || !latlng || !unit){
-    return next(new AppError('Invalid Request. Try Again', 400))
+  if (!distance || !latlng || !unit) {
+    return next(new AppError('Invalid Request. Try Again', 400));
   }
   let radians;
-  if(unit === 'mi'){
-    radians = distance/3959
-  }else if(unit === 'km'){
-    radians = distance/6371
-  }else{
-    return next(new AppError('Invalid Request. Try Again', 400))
+  if (unit === 'mi') {
+    radians = distance / 3959;
+  } else if (unit === 'km') {
+    radians = distance / 6371;
+  } else {
+    return next(new AppError('Invalid Request. Try Again', 400));
   }
   const [lat, lng] = latlng.split(',');
   const tours = await Tours.find({
@@ -153,8 +153,8 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     tourLength: tours.length,
-    tours
-  })
+    tours,
+  });
 });
 
 //Delete a tour
@@ -165,6 +165,35 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
     status: 'Success',
     data: null,
   });
+});
+
+exports.distanceCheck = catchAsync(async (req, res, next) => {
+  const { lnglat } = req.params;
+  const [lng, lat] = lnglat.split(',');
+  const distances = await Tours.aggregate([{
+    $geoNear:{
+      near: {
+        type: 'Point',
+        coordinates: [lng*1, lat*1],
+      },
+      distanceField: 'distance',
+      distanceMultiplier: 0.001, 
+    }
+  },
+  {
+    $project: {
+      distance: 1,
+      name: 1
+    }
+  }    
+]);
+
+res.status(200).json({
+  status: 'Success',
+  data: {
+    distances,
+  },
+})
 });
 
 exports.updateTourPartially = catchAsync(async (req, res, next) => {

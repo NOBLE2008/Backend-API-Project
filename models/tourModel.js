@@ -133,10 +133,6 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secret: { $ne: true } } });
-  next();
-});
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;

@@ -10,6 +10,7 @@ const {
   aggregateMonthly,
   myTours,
   getToursWithin,
+  distanceCheck,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
 const { isAuth, isAuthAdmin } = require('../middlewares/authMiddleware');
@@ -32,6 +33,7 @@ router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
 
 router.get('/get-within/distance/:distance/unit/:unit/point/:latlng', getToursWithin)
+router.get('/distance-check/point/:lnglat', distanceCheck);
 //Route handler for /:id endpoint
 router
   .route('/:id')
