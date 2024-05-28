@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\controller",
+    "\\middlewares"
   ],
-  "SelectedNode": "\\server.js",
+  "SelectedNode": "\\middlewares\\errorMiddleware.js",
   "PreviewInSolutionExplorer": false
 }

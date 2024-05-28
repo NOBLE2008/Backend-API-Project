@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\server.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\controller\\handlerFactory.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:controller\\handlerFactory.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "server.js",
-              "DocumentMoniker": "C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\server.js",
-              "RelativeDocumentMoniker": "server.js",
-              "ToolTip": "C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\server.js*",
-              "RelativeToolTip": "server.js*",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAARAAAA",
+              "Title": "handlerFactory.js",
+              "DocumentMoniker": "C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\controller\\handlerFactory.js",
+              "RelativeDocumentMoniker": "controller\\handlerFactory.js",
+              "ToolTip": "C:\\Users\\Noble\\OneDrive\\Desktop\\Web Dev\\Node-Mongo-Course\\controller\\handlerFactory.js",
+              "RelativeToolTip": "controller\\handlerFactory.js",
+              "ViewState": "AQIAAEIAAAAAAAAAAAAAAE4AAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-05-27T13:54:43.669Z",
+              "WhenOpened": "2024-05-28T12:41:10.693Z",
               "EditorCaption": ""
             }
           ]

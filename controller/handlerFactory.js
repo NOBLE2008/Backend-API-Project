@@ -74,6 +74,10 @@ exports.getAll = (Model) =>
         if (!tour) {
           return next(new AppError('The tour you\'re trying to make review for doesn\'t exist', 404));
         }
+        const duplicateReview = await Model.findOne({ user: req.user.id, tour: tourId })
+        if (duplicateReview) {
+            return next(new AppError('You have made a Review for this tour. You can only update the review.', 401))
+        }
         const review = await Model.create({
           user: req.user.id,
           tour: tourId,
