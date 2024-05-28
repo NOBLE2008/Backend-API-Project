@@ -66,6 +66,17 @@ const tourSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      description: String
+    },
     startDates: [Date],
     priceDiscount: {
       type: Number,
@@ -109,6 +120,7 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.index({ slug: 1 }, {price: 1}, {ratingsAverage: -1});
+tourSchema.index({ startLocation: '2dsphere' })
 
 tourSchema.virtual('reviews', {
   ref: 'Reviews',

@@ -3,8 +3,6 @@ const APIFeatures = require('../utils/APIFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-
-
 //Get all tours
 exports.getAllTours = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
@@ -18,16 +16,16 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
     const numDocuments = await Tours.countDocuments();
     const pageCount = req.query.page * 1 * 3;
     if (numDocuments < pageCount) {
-      next(new AppError('The page does not exist', 400))
+      next(new AppError('The page does not exist', 400));
     } else if (pageCount <= 0) {
-      next(new AppError('The page does not exist', 400))
+      next(new AppError('The page does not exist', 400));
     }
   }
 
   const tours = await features.query.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
-  })
+  });
   res.status(200).json({
     status: 'Success',
     currentPage: page,
@@ -36,135 +34,153 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
       tours,
     },
   });
-})
+});
 
 exports.aggregate = catchAsync(async (req, res, next) => {
-    const aggregateFeature = new APIFeatures(Tours, req.query)
-      .aggregateDifficulty()
-      .paginate();
-    const stats = await aggregateFeature.query;
+  const aggregateFeature = new APIFeatures(Tours, req.query)
+    .aggregateDifficulty()
+    .paginate();
+  const stats = await aggregateFeature.query;
 
-    const page = req.query.page || 1;
+  const page = req.query.page || 1;
 
-    res.status(200).json({
-      status: 'Success',
-      currentPage: page,
-      tourLength: stats.length,
-      data: {
-        stats,
-      },
-    });
-})
+  res.status(200).json({
+    status: 'Success',
+    currentPage: page,
+    tourLength: stats.length,
+    data: {
+      stats,
+    },
+  });
+});
 
 exports.aggregateMonthly = catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(Tours, req.params).aggregateMonthly();
-    const stats = await features.query;
+  const features = new APIFeatures(Tours, req.params).aggregateMonthly();
+  const stats = await features.query;
 
-    res.status(200).json({
-      status: 'Success',
-      tourLength: stats.length,
-      data: {
-        stats,
-      },
-    });
-})
+  res.status(200).json({
+    status: 'Success',
+    tourLength: stats.length,
+    data: {
+      stats,
+    },
+  });
+});
 
 //Get tour by Id
 exports.getTourById = catchAsync(async (req, res, next) => {
-    const {id} = req.params;
-    const tour = await Tours.findById(id).populate({
+  const { id } = req.params;
+  const tour = await Tours.findById(id)
+    .populate({
       path: 'guides',
       select: '-__v -passwordChangedAt',
-    }).populate({
+    })
+    .populate({
       path: 'reviews',
       select: '-__v -passwordChangedAt',
     });
-    if(!tour){
-      return next(new AppError('Tour wasn,t found', 404))
-    }
-    res.status(200).json({
-      status: 'Success',
-      data: {
-        tour,
-      },
-    });
-})
+  if (!tour) {
+    return next(new AppError('Tour wasn,t found', 404));
+  }
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      tour,
+    },
+  });
+});
 
 //Update entire tour (PUT)
 exports.updateEntireTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const tourTest = await Tours.findById(id);
-  if(!tourTest){
-    return next(new AppError('Tour wasn,t found', 404))
+  if (!tourTest) {
+    return next(new AppError('Tour wasn,t found', 404));
   }
-    const tour = await Tours.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    }).populate({
-      path: 'guides',
-      select: '-__v -passwordChangedAt',
-    });
-    res.status(200).json({
-      status: 'Success',
-      data: {
-        tour,
-      },
-    });
-})
+  const tour = await Tours.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  }).populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      tour,
+    },
+  });
+});
 
 //Post new tour
 exports.addNewTour = catchAsync(async (req, res, next) => {
-    const tour = (await Tours.create(req.body)).populate({
-      path: 'guides',
-      select: '-__v -passwordChangedAt',
-    });
-    tour.ratingsAverage = 0
-    tour.ratingsQuantity = 0
-    await tour.save()
-    res.status(200).json({
-      status: 'Success',
-      data: {
-        tour,
+  const tour = (await Tours.create(req.body)).populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  tour.ratingsAverage = 0;
+  tour.ratingsQuantity = 0;
+  await tour.save();
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      tour,
+    },
+  });
+});
+
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng } = req.params;
+  const radians = distance/3959;
+  const [lat, lng] = latlng.split(',');
+  const tours = await Tours.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[lat, lng], radians],
       },
-    });
-})
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    tours
+  })
+});
 
 //Delete a tour
 exports.deleteATour = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Tours.findByIdAndDelete(id);
-    res.status(204).json({
-      status: 'Success',
-      data: null,
-    });
-})
+  const { id } = req.params;
+  await Tours.findByIdAndDelete(id);
+  res.status(204).json({
+    status: 'Success',
+    data: null,
+  });
+});
 
 exports.updateTourPartially = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Tours.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    })
-    const newTour = await Tours.findById(id).populate({
-      path: 'guides',
-      select: '-__v -passwordChangedAt',
-    });
-    res.status(200).json({
-      status: 'Success',
-      data: {
-        newTour,
-      },
-    });
+  const { id } = req.params;
+  await Tours.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
   });
+  const newTour = await Tours.findById(id).populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      newTour,
+    },
+  });
+});
 
-  
 exports.myTours = catchAsync(async (req, res, next) => {
   const { id } = req.user;
-  const tours = await Tours.find({guides: { $in: [id] }}).select('-guides');
+  const tours = await Tours.find({ guides: { $in: [id] } }).select('-guides');
   res.status(200).json({
     status: 'Success',
     data: {
       tours,
     },
-  })
-})
+  });
+});
