@@ -3,6 +3,7 @@ const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
 const Users = require('../models/userModel');
 
+
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
   const features = new APIFeatures(Users.find(), req.query)
@@ -31,6 +32,25 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.photoUpload = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const user = await Users.findById(id);
+  if (!user) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+  if (!req.file) {
+    return next(new AppError('No Photo Uploaded', 400));
+  }
+  user.photo = req.file.filename;
+  await user.save();
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      user,
+    },
+  });
+})
 
 exports.getUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;

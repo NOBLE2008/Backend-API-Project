@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const multer = require('multer');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser')
@@ -13,6 +12,7 @@ const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoute');
 const userRouter = require('./routes/userRoute');
 const reviewRouter = require('./routes/reviewRoute');
+
 
 const app = express();
 

@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const {
   signUp,
   login,
@@ -10,12 +11,13 @@ const {
   getLoggedInUser,
 } = require('../controller/authController');
 
-const { getAllUsers, updateEntireUser, getUserById, myInfo } = require('../controller/userController');
+const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload } = require('../controller/userController');
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+const upload = multer({dest: 'public/img/users'});
 
 
 router.get('/me', isAuth, myInfo)
@@ -28,6 +30,7 @@ router.get(
   '/:id',
   getUserById,
 );
+router.post('/photo', isAuth, upload.single('photo'), photoUpload)
 router.post('/sign-up', signUp);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
