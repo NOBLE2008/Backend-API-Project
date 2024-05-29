@@ -177,10 +177,24 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
 });
 
 exports.distanceCheck = catchAsync(async (req, res, next) => {
-  const { lnglat} = req.params;
+  const { lnglat, unit } = req.params;
   const [lng, lat] = lnglat.split(',');
-  const multiplier = 0.000621371
-  const tunit = 'mi'
+  let multiplier
+  let tunit
+  if(!unit){
+    multiplier = 0.000621371
+    tunit ='mi'
+  }
+  if(unit ==='mi'){
+    multiplier = 0.000621371
+    tunit ='mi'
+  }if(unit === 'km'){
+    multiplier = 0.001
+    tunit ='km'
+  }if(unit !=='mi' && unit!== 'km'){
+    multiplier = 0.000621371
+    tunit ='mi'
+  }
   const distances = await Tours.aggregate([{
     $geoNear:{
       near: {
