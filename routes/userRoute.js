@@ -14,6 +14,7 @@ const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload } = requ
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');
+const { photoUploader } = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.get(
   '/:id',
   getUserById,
 );
-router.post('/photo', isAuth, photoUpload, photoUpload)
+router.post('/photo', isAuth, photoUploader, photoUpload)
 router.post('/sign-up', signUp);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
