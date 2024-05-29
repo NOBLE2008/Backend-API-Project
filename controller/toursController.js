@@ -179,22 +179,8 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
 exports.distanceCheck = catchAsync(async (req, res, next) => {
   const { lnglat, unit } = req.params;
   const [lng, lat] = lnglat.split(',');
-  let multiplier
-  let tunit
-  if(!unit){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }
-  if(unit ==='mi'){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }if(unit === 'km'){
-    multiplier = 0.001
-    tunit ='km'
-  }if(unit !=='mi' && unit!== 'km'){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }
+  const multiplier = unit ==='km'? 0.001: 0.000621371 
+  const tunit = unit ==='km'?'km':'mi'
   const distances = await Tours.aggregate([{
     $geoNear:{
       near: {
@@ -211,15 +197,12 @@ exports.distanceCheck = catchAsync(async (req, res, next) => {
       name: 1
     }
   }
-]);
-
-console.log(distances);
-
+])
 res.status(200).json({
   status: 'Success',
   data: {
     unit: tunit,
-    distance,
+    distances,
   },
 })
 });
@@ -227,22 +210,9 @@ res.status(200).json({
 exports.distanceCheckById = catchAsync(async (req, res, next) => {
   const { lnglat, unit } = req.params;
   const [lng, lat] = lnglat.split(',');
-  let multiplier
-  let tunit
-  if(!unit){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }
-  if(unit ==='mi'){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }if(unit === 'km'){
-    multiplier = 0.001
-    tunit ='km'
-  }if(unit !=='mi' && unit!== 'km'){
-    multiplier = 0.000621371
-    tunit ='mi'
-  }
+  const multiplier = unit ==='km'? 0.001: 0.000621371 
+  const tunit = unit ==='km'?'km':'mi'
+
   const distances = await Tours.aggregate([{
     $geoNear:{
       near: {
@@ -264,8 +234,6 @@ exports.distanceCheckById = catchAsync(async (req, res, next) => {
 if(!req.params.id){
   return next(new AppError('Invalid Request. Try Again', 400));
 }
-
-console.log(distances, req.body.id);
 const distance = distances.filter(el => el._id == req.params.id);
 
 res.status(200).json({
