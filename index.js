@@ -16,6 +16,11 @@ const reviewRouter = require('./routes/reviewRoute');
 
 const app = express();
 
+app.use(express.static('public'));
+
+app.get('/thumbnail', (req, res) => {
+  res.sendFile('public/img/users/user-6657804eab590d38b3b30183-1717014373875.png', { root: __dirname });
+});
 
 // Set security HTTP headers
 app.use(helmet());

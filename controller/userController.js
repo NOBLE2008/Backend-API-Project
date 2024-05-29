@@ -1,3 +1,4 @@
+const path = require('path');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
@@ -32,6 +33,16 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getMyPhoto = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const user = await Users.findById(id);
+  if (!user) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+  const imgpath = path.join(__dirname, `../public/img/users/${user.photo}`);
+  res.sendFile(imgpath);
+})
 
 exports.photoUpload = catchAsync(async (req, res, next) => {
   const { id } = req.user;

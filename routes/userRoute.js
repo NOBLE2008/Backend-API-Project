@@ -10,14 +10,14 @@ const {
   getLoggedInUser,
 } = require('../controller/authController');
 
-const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload } = require('../controller/userController');
+const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload, getMyPhoto } = require('../controller/userController');
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');
 const { photoUploader } = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
-
+router.get('/myPhoto', getMyPhoto)
 router.get('/me', isAuth, myInfo)
 router.get(
   '/',
