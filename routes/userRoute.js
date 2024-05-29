@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 const {
   signUp,
   login,
@@ -17,8 +16,6 @@ const {
 } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
-const upload = multer({dest: 'public/img/users'});
-
 
 router.get('/me', isAuth, myInfo)
 router.get(
@@ -30,7 +27,7 @@ router.get(
   '/:id',
   getUserById,
 );
-router.post('/photo', isAuth, upload.single('photo'), photoUpload)
+router.post('/photo', isAuth, photoUpload, photoUpload)
 router.post('/sign-up', signUp);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
