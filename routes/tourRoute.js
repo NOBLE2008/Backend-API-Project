@@ -11,6 +11,7 @@ const {
   myTours,
   getToursWithin,
   distanceCheck,
+  distanceCheckById,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
 const { isAuth, isAuthAdmin } = require('../middlewares/authMiddleware');
@@ -33,6 +34,7 @@ router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
 
 router.get('/get-within/distance/:distance/unit/:unit/point/:latlng', getToursWithin)
+router.get('/distance-check/point/:lnglat/unit/:unit/tour/:id', distanceCheckById);
 router.get('/distance-check/point/:lnglat/unit/:unit', distanceCheck);
 //Route handler for /:id endpoint
 router
