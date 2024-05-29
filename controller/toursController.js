@@ -179,7 +179,7 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
 exports.distanceCheck = catchAsync(async (req, res, next) => {
   const { lnglat} = req.params;
   const [lng, lat] = lnglat.split(',');
-  let multiplier
+  const multiplier = 0.000621371
   const tunit = 'mi'
   const distances = await Tours.aggregate([{
     $geoNear:{
