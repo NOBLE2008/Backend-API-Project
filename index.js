@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const multer = require('multer');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser')
