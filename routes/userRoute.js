@@ -10,7 +10,7 @@ const {
   getLoggedInUser,
 } = require('../controller/authController');
 
-const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload, getMyPhoto } = require('../controller/userController');
+const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload, getMyPhoto, getPhotoById } = require('../controller/userController');
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');
@@ -18,11 +18,11 @@ const { photoUploader } = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
 //Fixed bug in myPhoto handler by adding the isAuth middleware
+router.get('/photo/:id', getPhotoById)
 router.get('/myPhoto', isAuth, getMyPhoto)
 router.get('/me', isAuth, myInfo)
 router.get(
   '/',
-  isAuth,
   getAllUsers,
 );
 router.get(

@@ -34,6 +34,16 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getPhotoById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await Users.findById(id);
+  if (!user) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+  const imgpath = path.join(__dirname, `../public/img/users/${user.photo}`);
+  res.sendFile(imgpath);
+})
+
 exports.getMyPhoto = catchAsync(async (req, res, next) => {
   const { id } = req.user;
   const user = await Users.findById(id);
