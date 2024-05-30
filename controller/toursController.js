@@ -136,20 +136,22 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid Request. Try Again', 400));
   }
   let radians;
-  let tunit
-  if(!unit){
+  let tunit;
+  if (!unit) {
     radians = distance / 3959;
-    tunit ='mi'
+    tunit = 'mi';
   }
-  if(unit ==='mi'){
+  if (unit === 'mi') {
     radians = distance / 3959;
-    tunit ='mi'
-  }if(unit === 'km'){
+    tunit = 'mi';
+  }
+  if (unit === 'km') {
     radians = distance / 6371;
-    tunit ='km'
-  }if(unit !=='mi' && unit!== 'km'){
+    tunit = 'km';
+  }
+  if (unit !== 'mi' && unit !== 'km') {
     radians = distance / 3959;
-    tunit ='mi'
+    tunit = 'mi';
   }
   const [lat, lng] = latlng.split(',');
   const tours = await Tours.find({
@@ -179,121 +181,134 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
 
 exports.tourImagesUpload = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  if(!req.files){
-    return next(new AppError('No files were uploaded', 400))
+  if (!req.files) {
+    return next(new AppError('No files were uploaded', 400));
   }
-  if(!req.files.images){
-    return next(new AppError('No Tour Images were uploaded', 400))
+  if (!req.files.images) {
+    return next(new AppError('No Tour Images were uploaded', 400));
   }
   const tour = await Tours.findById(id);
-  if(!req.files.imageCover || req.files.imageCover.length === 0){
-    if(!tour){
-      return next(new AppError('Tour not found', 404))
+  if (!req.files.imageCover || req.files.imageCover.length === 0) {
+    if (!tour) {
+      return next(new AppError('Tour not found', 404));
     }
-    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`
-    sharp(req.files.images[0].buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`;
+    await sharp(req.files.images[0].buffer)
+      .resize(900, 900)
+      .toFormat('jpeg')
+      .toFile(`public/img/tours/${req.files.filename}`);
     tour.imageCover = req.files.images[0];
     const images = [];
-    req.files.images.forEach((e, index) => {
-      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`
-      sharp(e.buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
-      images.push(req.files.filename)
-    })
-    tour.images = images;  
+    req.files.images.forEach(async (e, index) => {
+      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`;
+      await sharp(e.buffer)
+        .resize(900, 900)
+        .toFormat('jpeg')
+        .toFile(`public/img/tours/${req.files.filename}`);
+      images.push(req.files.filename);
+    });
+    tour.images = images;
     await tour.save();
-    }else{
-    if(!tour){
-      return next(new AppError('Tour not found', 404))
+  } else {
+    if (!tour) {
+      return next(new AppError('Tour not found', 404));
     }
-    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`
-    sharp(req.files.imageCover[0].buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(900, 900)
+      .toFormat('jpeg')
+      .toFile(`public/img/tours/${req.files.filename}`);
     tour.imageCover = req.files.filename;
     const images = [];
-    req.files.images.forEach((e, index) => {
-      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`
-      sharp(e.buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
-      images.push(req.files.filename)
-    })
-    tour.images = images; 
+    req.files.images.forEach(async (e, index) => {
+      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`;
+      await sharp(e.buffer)
+        .resize(900, 900)
+        .toFormat('jpeg')
+        .toFile(`public/img/tours/${req.files.filename}`);
+      images.push(req.files.filename);
+    });
+    tour.images = images;
     await tour.save();
-    }
-    res.status(200).json({
-      status: 'success',
-      data: {
-        tour,
-      },
-    })
   }
-)
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
 
 exports.distanceCheck = catchAsync(async (req, res, next) => {
   const { lnglat, unit } = req.params;
   const [lng, lat] = lnglat.split(',');
-  const multiplier = unit ==='km'? 0.001: 0.000621371 
-  const tunit = unit ==='km'?'km':'mi'
-  const distances = await Tours.aggregate([{
-    $geoNear:{
-      near: {
-        type: 'Point',
-        coordinates: [lng*1, lat*1],
+  const multiplier = unit === 'km' ? 0.001 : 0.000621371;
+  const tunit = unit === 'km' ? 'km' : 'mi';
+  const distances = await Tours.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
       },
-      distanceField: 'distance',
-      distanceMultiplier: multiplier, 
-    }
-  },
-  {
-    $project: {
-      distance: 1,
-      name: 1
-    }
-  }
-])
-res.status(200).json({
-  status: 'Success',
-  data: {
-    unit: tunit,
-    distances,
-  },
-})
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      unit: tunit,
+      distances,
+    },
+  });
 });
 
 exports.distanceCheckById = catchAsync(async (req, res, next) => {
   const { lnglat, unit } = req.params;
   const [lng, lat] = lnglat.split(',');
-  const multiplier = unit ==='km'? 0.001: 0.000621371 
-  const tunit = unit ==='km'?'km':'mi'
+  const multiplier = unit === 'km' ? 0.001 : 0.000621371;
+  const tunit = unit === 'km' ? 'km' : 'mi';
 
-  const distances = await Tours.aggregate([{
-    $geoNear:{
-      near: {
-        type: 'Point',
-        coordinates: [lng*1, lat*1],
+  const distances = await Tours.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
       },
-      distanceField: 'distance',
-      distanceMultiplier: multiplier, 
-    }
-  },
-  {
-    $project: {
-      distance: 1,
-      name: 1
-    }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  if (!req.params.id) {
+    return next(new AppError('Invalid Request. Try Again', 400));
   }
-]);
+  const distance = distances.filter((el) => el._id == req.params.id);
 
-if(!req.params.id){
-  return next(new AppError('Invalid Request. Try Again', 400));
-}
-const distance = distances.filter(el => el._id == req.params.id);
-
-res.status(200).json({
-  status: 'Success',
-  data: {
-    unit: tunit,
-    distance,
-  },
-})
-})
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      unit: tunit,
+      distance,
+    },
+  });
+});
 
 exports.updateTourPartially = catchAsync(async (req, res, next) => {
   const { id } = req.params;

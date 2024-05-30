@@ -64,7 +64,7 @@ exports.photoUpload = catchAsync(async (req, res, next) => {
     return next(new AppError('Please upload an image file', 400));
   }
   req.file.filename = `user-${id}-${Date.now()}.jpeg`;
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .toFile(`public/img/users/${req.file.filename}`);
