@@ -120,7 +120,8 @@ exports.getTourImages = catchAsync(async (req, res, next) => {
     return next(new AppError('Tour wasn,t found', 404));
   }
   const tourImages = {
-    images: tour.images
+    images: tour.images,
+    imageCover: tour.imageCover,
   }
   res.status(200).json({
     status: 'Success',
