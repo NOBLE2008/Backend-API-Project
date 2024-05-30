@@ -58,9 +58,13 @@ const tourSchema = new mongoose.Schema(
         required: [true, 'A tour must have at least one guide'],
       }
     ],
+    imageCover: {
+      type: String,
+      default: 'default-img.jpeg',
+    },
     images: {
       type: Array,
-      default: [],
+      default: ["default-img.jpeg"],
     },
     startLocation: {
       // GeoJSON
