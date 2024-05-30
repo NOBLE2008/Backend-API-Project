@@ -1,3 +1,4 @@
+const sharp = require('sharp');
 const Tours = require('../models/tourModel');
 const APIFeatures = require('../utils/APIFeatures');
 const AppError = require('../utils/appError');
@@ -175,6 +176,38 @@ exports.deleteATour = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.tourImagesUpload = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  if(!req.files){
+    return next(new AppError('No files were uploaded', 400))
+  }
+  if(!req.files.images){
+    return next(new AppError('No Tour Images were uploaded', 400))
+  }
+  const tour = await Tours.findById(id);
+    if(!tour){
+      return next(new AppError('Tour not found', 404))
+    }
+    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`
+    sharp(req.files.imageCover[0].buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+    tour.imageCover = req.files.filename;
+    const images = [];
+    req.files.images.forEach((e, index) => {
+      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`
+      sharp(e.buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+      images.push(req.files.filename)
+    })
+    tour.images = images; 
+    await tour.save();
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    })
+  }
+)
 
 exports.distanceCheck = catchAsync(async (req, res, next) => {
   const { lnglat, unit } = req.params;

@@ -12,14 +12,23 @@ const {
   getToursWithin,
   distanceCheck,
   distanceCheckById,
+  tourImagesUpload,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
 const { isAuth, isAuthAdmin } = require('../middlewares/authMiddleware');
+const { tourImagesUploader } = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
 
 router.use('/:tourId/reviews', require('./reviewRoute'));
 
+router.post(
+  '/tour-photo/:id',
+  isAuth,
+  isAuthAdmin,
+  tourImagesUploader,
+  tourImagesUpload,
+);
 router.get('my-tours', isAuth, myTours);
 // router.param('id');
 
@@ -32,9 +41,14 @@ router.route('/aggregate-monthly/:year').get(aggregateMonthly);
 //Route handler for / endpoint
 router.route('/').get(getAllTours).post(isAuth, isAuthAdmin, addNewTour);
 
-
-router.get('/get-within/distance/:distance/unit/:unit/point/:latlng', getToursWithin)
-router.get('/distance-check/point/:lnglat/unit/:unit/tour/:id', distanceCheckById);
+router.get(
+  '/get-within/distance/:distance/unit/:unit/point/:latlng',
+  getToursWithin,
+);
+router.get(
+  '/distance-check/point/:lnglat/unit/:unit/tour/:id',
+  distanceCheckById,
+);
 router.get('/distance-check/point/:lnglat/unit/:unit', distanceCheck);
 //Route handler for /:id endpoint
 router
