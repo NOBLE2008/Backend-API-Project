@@ -1,9 +1,9 @@
 const path = require('path');
+const sharp = require('sharp');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
 const Users = require('../models/userModel');
-
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
@@ -42,7 +42,7 @@ exports.getPhotoById = catchAsync(async (req, res, next) => {
   }
   const imgpath = path.join(__dirname, `../public/img/users/${user.photo}`);
   res.sendFile(imgpath);
-})
+});
 
 exports.getMyPhoto = catchAsync(async (req, res, next) => {
   const { id } = req.user;
@@ -52,16 +52,25 @@ exports.getMyPhoto = catchAsync(async (req, res, next) => {
   }
   const imgpath = path.join(__dirname, `../public/img/users/${user.photo}`);
   res.sendFile(imgpath);
-})
+});
 
 exports.photoUpload = catchAsync(async (req, res, next) => {
+  console.log(req.file);
   const { id } = req.user;
+  if (!req.file) {
+    return next(new AppError('No Photo Uploaded', 400));
+  }
+  if(!req.file.mimetype.startsWith('image')) {
+    return next(new AppError('Please upload an image file', 400));
+  }
+  req.file.filename = `user-${id}-${Date.now()}.jpeg`;
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .toFile(`public/img/users/${req.file.filename}`);
   const user = await Users.findById(id);
   if (!user) {
     return next(new AppError('User wasn,t found', 404));
-  }
-  if (!req.file) {
-    return next(new AppError('No Photo Uploaded', 400));
   }
   user.photo = req.file.filename;
   await user.save();
@@ -71,7 +80,7 @@ exports.photoUpload = catchAsync(async (req, res, next) => {
       user,
     },
   });
-})
+});
 
 exports.getUserById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -94,16 +103,23 @@ exports.updateEntireUser = catchAsync(async (req, res, next) => {
     return next(new AppError('Tour wasn,t found', 404));
   }
 
-
-  const excludedFields = ['password', 'confirmPassword', 'role', 'permissions', 'passwordChangedAt', 'passwordResetToken', 'passwordResetExpires'];
+  const excludedFields = [
+    'password',
+    'confirmPassword',
+    'role',
+    'permissions',
+    'passwordChangedAt',
+    'passwordResetToken',
+    'passwordResetExpires',
+  ];
   excludedFields.map((el) => delete req.body[el]);
   // eslint-disable-next-line no-constant-condition, no-cond-assign
-  if(req.body = {}){
-    return next(new AppError('You didn\'t update the permitted data', 400));
+  if ((req.body = {})) {
+    return next(new AppError("You didn't update the permitted data", 400));
   }
   await Users.findByIdAndUpdate(id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
   res.status(200).json({
     status: 'Success',
@@ -122,5 +138,5 @@ exports.myInfo = catchAsync(async (req, res, next) => {
     data: {
       user: userTest,
     },
-  })
-})
+  });
+});
