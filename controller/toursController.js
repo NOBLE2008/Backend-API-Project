@@ -186,6 +186,22 @@ exports.tourImagesUpload = catchAsync(async (req, res, next) => {
     return next(new AppError('No Tour Images were uploaded', 400))
   }
   const tour = await Tours.findById(id);
+  if(!req.files.imageCover || req.files.imageCover.length === 0){
+    if(!tour){
+      return next(new AppError('Tour not found', 404))
+    }
+    req.files.filename = `tour-${tour._id}-${Date.now()}.jpeg`
+    sharp(req.files.images[0].buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+    tour.imageCover = req.files.images[0];
+    const images = [];
+    req.files.images.forEach((e, index) => {
+      req.files.filename = `tour-${tour._id}-${Date.now()}-${index}.jpeg`
+      sharp(e.buffer).resize(900, 900).toFormat('jpeg').toFile(`public/img/tours/${req.files.filename}`);
+      images.push(req.files.filename)
+    })
+    tour.images = images;  
+    await tour.save();
+    }else{
     if(!tour){
       return next(new AppError('Tour not found', 404))
     }
@@ -200,6 +216,7 @@ exports.tourImagesUpload = catchAsync(async (req, res, next) => {
     })
     tour.images = images; 
     await tour.save();
+    }
     res.status(200).json({
       status: 'success',
       data: {
