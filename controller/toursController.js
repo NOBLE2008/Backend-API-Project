@@ -113,6 +113,23 @@ exports.updateEntireTour = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getTourImages = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const tour = await Tours.findById(id);
+  if (!tour) {
+    return next(new AppError('Tour wasn,t found', 404));
+  }
+  const tourImages = {
+    images: tour.images
+  }
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      tourImages,
+    },
+  });
+})
+
 //Post new tour
 exports.addNewTour = catchAsync(async (req, res, next) => {
   const tour = (await Tours.create(req.body)).populate({

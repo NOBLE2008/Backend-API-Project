@@ -27,7 +27,7 @@ exports.sendEmail = (recipient, subject, text, html, response) => async (req, re
                 user: 'nobleben2008@gmail.com',
                 clientId: process.env.CLIENT_ID,
                 clientSecret: process.env.CLIENT_SECRET,
-                refreshToken: process.env.REFRESH_TOKEN,
+                refreshToken: process.env.REFRESH,
                 accessToken: token,
             },
             tls: {

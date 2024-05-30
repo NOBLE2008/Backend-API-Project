@@ -13,6 +13,7 @@ const {
   distanceCheck,
   distanceCheckById,
   tourImagesUpload,
+  getTourImages,
 } = require('../controller/toursController');
 const { bestCheap } = require('../middlewares/bodyMiddleware');
 const { isAuth, isAuthAdmin } = require('../middlewares/authMiddleware');
@@ -22,13 +23,12 @@ const router = express.Router();
 
 router.use('/:tourId/reviews', require('./reviewRoute'));
 
-router.post(
-  '/tour-photo/:id',
+router.route('/tour-photo/:id').post(
   isAuth,
   isAuthAdmin,
   tourImagesUploader,
   tourImagesUpload,
-);
+).get(getTourImages);
 router.get('my-tours', isAuth, myTours);
 // router.param('id');
 
