@@ -16,4 +16,8 @@ const upload = multer({
     fileFilter: multerFilter
 });
 
+exports.tourImagesUpload = upload.fields([
+    {name: 'imageCover', maxCount: 1},
+    {name: 'images', maxCount: 5}
+])
 exports.photoUploader = upload.single('photo');
