@@ -17,7 +17,6 @@ const tours = JSON.parse(
 const admin = {
   name: process.env.ADMIN_NAME,
   email: process.env.ADMIN_EMAIL,
-  photo: "www.defaultphoto.png",
   password: process.env.ADMIN_PASSWORD,
   confirmPassword: process.env.ADMIN_CONFIRMPASSWORD,
   role: "Admin",

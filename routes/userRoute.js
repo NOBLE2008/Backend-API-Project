@@ -17,7 +17,8 @@ const {
 const { photoUploader } = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
-router.get('/myPhoto', getMyPhoto)
+//Fixed bug in myPhoto handler by adding the isAuth middleware
+router.get('/myPhoto', isAuth, getMyPhoto)
 router.get('/me', isAuth, myInfo)
 router.get(
   '/',

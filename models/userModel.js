@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        default: 'defaultphoto.png'
-    },
+        default: 'default-img.jpg',
+      },
     password: {
         type: String,
         required: [true, 'Provide a password'],
