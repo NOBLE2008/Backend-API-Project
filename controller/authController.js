@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const Users = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const { sendEmail } = require('../utils/sendEmail');
+const Email = require('../utils/sendEmail');
 const Sessions = require('../models/sessionModel');
 const { cookieRes } = require('../utils/cookieRes')
 
@@ -139,8 +139,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const emailHtml = `<h1 style="color: blue;">Password reset</h1>
   <p>A password reset has been initiated. click on the button below to reset your password.</p>
   <a href="${resetUrl}"><button style="background-color: blue; color: white; padding: 10px; text-decoration: none; display: inline-block">Reset Password</button></a>`;
-  const emailUser = sendEmail(email, emailSubject, emailText, emailHtml);
-  await emailUser(req, res, next);
+  new Email(email, emailSubject, emailText, emailHtml).sendEmail(res, next);
 });
 
 
