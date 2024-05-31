@@ -141,10 +141,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   <a href="${resetUrl}"><button style="background-color: blue; color: white; padding: 10px; text-decoration: none; display: inline-block">Reset Password</button></a>`;
   const emailUser = sendEmail(email, emailSubject, emailText, emailHtml);
   await emailUser(req, res, next);
-  res.status(200).json({
-    status: 'Success',
-    message: 'Token sent to email'
-  });
 });
 
 

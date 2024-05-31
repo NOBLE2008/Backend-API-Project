@@ -1,56 +1,38 @@
-const nodemailer = require('nodemailer')
-// eslint-disable-next-line import/no-extraneous-dependencies
-const {google} = require('googleapis')
-const catchAsync = require('./catchAsync')
-const AppError = require('./appError')
-
-const {OAuth2} = google.auth
-
-const Oauth2_Client = new OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET
-)
-
-Oauth2_Client.setCredentials({
-    refresh_token: process.env.REFRESH
-})
-
+const nodemailer = require('nodemailer');
+const catchAsync = require('./catchAsync');
+const AppError = require('./appError');
 // create reusable transportnpmer object using the default SMTP transport
-exports.sendEmail = (recipient, subject, text, html, response) => async (req, res, next) => {
-
+exports.sendEmail =
+  (recipient, subject, text, html, response) => async (req, res, next) => {
     // eslint-disable-next-line camelcase
-    const accessToken = Oauth2_Client.getAccessToken((err, token) => {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                type: 'OAuth2',
-                user: 'nobleben2008@gmail.com',
-                clientId: process.env.CLIENT_ID,
-                clientSecret: process.env.CLIENT_SECRET,
-                refreshToken: process.env.REFRESH,
-                accessToken: token,
-            },
-            tls: {
-                rejectUnauthorized: false // Allow self-signed certificates
-            }
-        })
-        
-        // send mail with defined transport object
-        
-        const mailOptions = {
-            from: 'Noble Web Solutions', // sender address
-            to: recipient, // list of receivers
-            subject: subject, // Subject line
-            text: text, // plain text body
-            html: html // html body
-        }
-        transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return next(new AppError(error.message, 500))
-        }
-        transporter.close() // shut down the connection pool, no more messages
-        // shut down the connection pool, no more messages
-    })
-    })
-        
-    }
+    const transporter = nodemailer.createTransport({
+      service: 'SendGrid',
+      auth: {
+        user: process.env.SENDGRID_USER,
+        pass: process.env.SENDGRID_PASSWORD,
+      },
+    });
+    // send mail with defined transport object
+
+    const mailOptions = {
+      from: 'nobleben2008@gmail.com', // sender address
+      to: recipient, // list of receivers
+      subject: subject, // Subject line
+      text: text, // plain text body
+      html: html, // html body
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return next(new AppError('Something Went wrong.', 500));
+      }
+      if (info) {
+        return res.status(200).json({
+          status: 'success',
+          message: 'Email sent successfully',
+        });
+      }
+      transporter.close(); // shut down the connection pool, no more messages
+      // shut down the connection pool, no more messages
+    });
+  };
