@@ -1,4 +1,4 @@
-const os = require('os')
+const os = require('os');
 const fs = require('fs');
 const crypto = require('crypto');
 const Users = require('../models/userModel');
@@ -6,8 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const Email = require('../utils/sendEmail');
 const Sessions = require('../models/sessionModel');
-const { cookieRes } = require('../utils/cookieRes')
-
+const { cookieRes } = require('../utils/cookieRes');
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -19,16 +18,16 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
   const token = await user.generateToken();
-    await Sessions.create({
-      jtok: token,
-      ip: req.ip,
-      device: os.hostname(),
-      email: req.body.email,
-      date: Date.now()
-    })
+  await Sessions.create({
+    jtok: token,
+    ip: req.ip,
+    device: os.hostname(),
+    email: req.body.email,
+    date: Date.now(),
+  });
   cookieRes(res, token);
   res.status(200).json({
-    status: 'Success'
+    status: 'Success',
   });
 });
 
@@ -45,12 +44,10 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     status: 'Success',
     message: 'User deleted successfully',
   });
-})
-
-
+});
 
 exports.signUp = catchAsync(async (req, res, next) => {
-  const {email} = req.body;
+  const { email } = req.body;
   console.log(process.env.JWT_SECRET);
   const User = await Users.create({
     name: req.body.name,
@@ -66,38 +63,46 @@ exports.signUp = catchAsync(async (req, res, next) => {
     device: os.hostname(),
     email: req.body.email,
     date: Date.now(),
-  })
+  });
   const emailSubject = 'Welcome to Kaitind Resturant!';
   const emailText = `Welcome to Our Online Shop!
   Thank you for joining us. We're excited to have you as part of our community.
   Explore our latest products, exclusive offers, and more. If you have any questions, feel free to reach out to our support team.
-  Happy shopping!`
-  fs.readFile(`${__dirname}/../Emails/welcome.html`, 'utf8', async (err, data) => {
-    const emailUser = sendEmail(email, emailSubject, emailText, data);
-    await emailUser(req, res, next);
+  Happy shopping!`;
+  fs.readFile(
+    `${__dirname}/../Emails/welcome.html`,
+    'utf8',
+    async (err, data) => {
+      const emailUser = sendEmail(email, emailSubject, emailText, data);
+      await emailUser(req, res, next);
 
-    if(err){
-      console.log(err)
-      return next(new AppError("Something went really wrong. Try again.", 500));
-    }
-  });
+      if (err) {
+        console.log(err);
+        return next(
+          new AppError('Something went really wrong. Try again.', 500),
+        );
+      }
+    },
+  );
   cookieRes(res, token);
   res.status(200).json({
-    status: 'Success'
+    status: 'Success',
   });
 });
 
 exports.getLoggedInUser = catchAsync(async (req, res, next) => {
   const { id } = req.user;
   const user = await Users.findById(id);
-  const session = await Sessions.find({email: user.email}).select('-_id -__v');
+  const session = await Sessions.find({ email: user.email }).select(
+    '-_id -__v',
+  );
   res.status(200).json({
     status: 'Success',
     data: {
-      session: session
-    }
-  })
-})
+      session: session,
+    },
+  });
+});
 
 exports.changePassword = catchAsync(async (req, res, next) => {
   const { id } = req.user;
@@ -142,38 +147,39 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   new Email(email, emailSubject, emailText, emailHtml).sendEmail(res, next);
 });
 
-
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  const {token} = req.params;
+  const { token } = req.params;
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-  const {newPassword} = req.body;
-  const user = await Users.findOne({passwordResetToken: hashedToken}).select('+password +passwordChangedAt +passwordResetExpires +PasswordResetToken');
-  console.log(user)
-  if(!user){
+  const { newPassword } = req.body;
+  const user = await Users.findOne({ passwordResetToken: hashedToken }).select(
+    '+password +passwordChangedAt +passwordResetExpires +PasswordResetToken',
+  );
+  console.log(user);
+  if (!user) {
     return next(new AppError('Invalid token', 400));
   }
-  if(Date.now() > user.passwordResetExpires){
+  if (Date.now() > user.passwordResetExpires) {
     return next(new AppError('Password reset timeout try again.', 400));
   }
-  if(!newPassword){
+  if (!newPassword) {
     return next(new AppError('Please provide your new password', 400));
   }
-  user.password =  newPassword;
+  user.password = newPassword;
   user.passwordChangedAt = Date.now();
   user.passwordResetToken = '';
   user.passwordResetExpires = undefined;
-  console.log(user)
+  console.log(user);
   await user.save();
   res.status(200).json({
-    status:'success',
-    message: 'Password changed successfully'
-  })
-})
+    status: 'success',
+    message: 'Password changed successfully',
+  });
+});
 exports.logOutUser = catchAsync(async (req, res, next) => {
-  const {ip} = req.body;
-  await Sessions.deleteMany({ip})
+  const { ip } = req.body;
+  await Sessions.deleteMany({ ip });
   res.status(200).json({
     status: 'Success',
-    message: 'Device logged out successfully'
-  })
-})
+    message: 'Device logged out successfully',
+  });
+});
