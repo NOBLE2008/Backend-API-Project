@@ -131,7 +131,6 @@ exports.changePassword = catchAsync(async (req, res, next) => {
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
-  console.log(email);
   const user = await Users.findOne({ email });
   if (!user) {
     return next(new AppError('There is no user with this email', 404));
