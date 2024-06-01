@@ -25,6 +25,26 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Provide a password'],
         select: false
     },
+    cart: {
+      type: [
+        {
+          tour: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Tours',
+            required: [true, 'A booking must have a tour'],
+          },
+          price: {
+            type: Number,
+            required: [true, 'A booking must have a price'],
+          },
+          quantity: {
+            type: Number,
+            required: [true, 'A booking must have a quantity'],
+            default: 1,
+          },
+        }
+      ]
+    },
     confirmPassword: {
         type: String,
         validate: {
