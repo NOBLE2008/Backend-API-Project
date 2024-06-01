@@ -141,10 +141,15 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetUrl = `http://localhost:${process.env.PORT}/api/v2/users/reset-password/${token}`;
   const emailText = `A password reset has been initiated. click on the link below to reset your password. ${resetUrl}`;
   const emailSubject = 'Password Reset';
-  const emailHtml = `<h1 style="color: blue;">Password reset</h1>
-  <p>A password reset has been initiated. click on the button below to reset your password.</p>
-  <a href="${resetUrl}"><button style="background-color: blue; color: white; padding: 10px; text-decoration: none; display: inline-block">Reset Password</button></a>`;
-  new Email(email, emailSubject, emailText, emailHtml).sendEmail(res, next);
+  fs.readFile(`${__dirname}/../utils/emailTemp.html`, 'utf-8', (err, data) => {
+    if(err){
+      console.log(err);
+      return next(new AppError('Something went really wrong. Try again.', 500));
+    }
+    console.log(data)
+    const emailHtml = data.replace('{{url}}', resetUrl).replace('{{firstname}}', user.name.split(' ')[0]);
+    new Email(email, emailSubject, emailText, emailHtml).sendEmail(res, next);
+  })
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
