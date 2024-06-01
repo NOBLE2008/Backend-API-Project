@@ -1,92 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaiting Online Shop Password Reset Email</title>
-    <style>
-        /* Password reset email styles */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            padding-bottom: 10px;
-            background-color: gainsboro;
-            align-items: center;
-            text-align: center;
-            
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        h2 {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        p {
-            font-size: 16px;
-        }
-        header{
-            margin-bottom: 40px;
-            background-color: rgb(67, 67, 251);
-            width: 100vh;
-        }
-        button {
-            font-size: 14px;
-            font-weight: 545;
-            height: 40px;
-            background-color: blue;
-            border: 1px solid white;
-            color: black;
-        }
-        a{
-            font-size: 16px;
-            text-decoration: none;
-            color: black;
-        }
-        button:hover {
-            background-color: white;
-            border: 1px solid blue;
-        }
-        footer {
-            font-weight: 520;
-            margin-top: 30px;
-        }
-        #div {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #container{
-            background-color: white;
-            padding-top: 30px;
-            padding-bottom: 30px;
-            border-radius: 30px;
-        }
-    </style>
-</head>
-<body>
-    <div style="height: 40vh;">
-    <header>
-        <h1>Kaitind Online Shop Password Reset Email</h1>
-        <h2 id="firstname">Hello {{firstname}},</h2>
-    </header>
-    <div id="container">
-    <div>
-        <p>You have requested a password reset for your Kaiting Online Shop account.</p>
-        <p>Please click the link below to reset your password:</p>
-        <div id="div"><button type="button"><a href="{{url}}">Reset Password</a></button></div>
-        </div>  
-        <p>If you did not request a password reset, please ignore this email.</p>     
-</div>
-<footer>   
-    <p>Thank you</p>
-    <p>Kaiting Online Shop Team</p>
-</footer>
-</div>
-</body>
-</html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to Our Online Shop!</title>
+      <style>
+          /* Welcome email styles */
+          body {
+              font-family: Arial, sans-serif;
+              background-color: #f5f5f5;
+              margin: 0;
+              padding: 0;
+          }
+          .container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          h1 {
+              color: #333;
+          }
+          p {
+              color: #555;
+          }
+          .button {
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #007bff;
+              color: #ffffff;
+              text-decoration: none;
+              border-radius: 4px;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <h1>Kaitind Online Shop Password Reset</h1>
+          <h2 id="firstname">Hello {{firstname}},</h2>
+          <p>You have requested a password reset for your Kaiting Online Shop account.</p>
+          <p>Please click the link below to reset your password:</p>
+          <p><a class="button" href="{{url}}">Visit Our Shop</a></p>
+      </div>
+  </body>
+  </html>

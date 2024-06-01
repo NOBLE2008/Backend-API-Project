@@ -73,8 +73,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     `${__dirname}/../Emails/welcome.html`,
     'utf8',
     async (err, data) => {
-      const emailUser = sendEmail(email, emailSubject, emailText, data);
-      await emailUser(req, res, next);
+      new Email(email, emailSubject, emailText, data).sendEmail(res, next);
 
       if (err) {
         console.log(err);
@@ -146,7 +145,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       console.log(err);
       return next(new AppError('Something went really wrong. Try again.', 500));
     }
-    console.log(data)
     const emailHtml = data.replace('{{url}}', resetUrl).replace('{{firstname}}', user.name.split(' ')[0]);
     new Email(email, emailSubject, emailText, emailHtml).sendEmail(res, next);
   })
@@ -159,7 +157,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   const user = await Users.findOne({ passwordResetToken: hashedToken }).select(
     '+password +passwordChangedAt +passwordResetExpires +PasswordResetToken',
   );
-  console.log(user);
   if (!user) {
     return next(new AppError('Invalid token', 400));
   }
