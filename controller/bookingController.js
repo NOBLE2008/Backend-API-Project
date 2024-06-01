@@ -8,7 +8,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         const { tourId } = req.params;
         const user = await Users.findById(req.user.id);
         const cart = user.cart.filter(item => item.tour._id.toString() === tourId);
-        console.log(cart)
         const tour = await Tours.findById(cart[0].tour);
         // Get the booked Tour
 
