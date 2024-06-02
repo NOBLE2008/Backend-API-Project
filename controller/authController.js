@@ -73,7 +73,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     `${__dirname}/../Emails/welcome.html`,
     'utf8',
     async (err, data) => {
-      new Email(email, emailSubject, emailText, data).sendEmail(res, next);
+      new Email(email, emailSubject, emailText, data.replace('<website>', `${req.protocol}://${req.get('host')}/api/v2/tours`)).sendEmail(res, next);
 
       if (err) {
         console.log(err);

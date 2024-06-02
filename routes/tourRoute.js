@@ -29,7 +29,7 @@ router.route('/tour-photo/:id').post(
   tourImagesUploader,
   tourImagesUpload,
 ).get(getTourImages);
-router.get('my-tours', isAuth, myTours);
+router.get('/my-tours', isAuth, myTours);
 // router.param('id');
 
 //Route for top-best-affordable tours
