@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
 const Users = require('../models/userModel');
+const Tours = require('../models/tourModel');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
@@ -126,6 +127,32 @@ exports.updateEntireUser = catchAsync(async (req, res, next) => {
     message: 'User updated successfully',
   });
 });
+
+exports.addTourToCart = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const userTest = await Users.findById(id);
+  if (!userTest) {
+    return next(new AppError('User wasn,t found', 404));
+  }
+  const { tourId, quantity } = req.body;
+  const product = await Tours.findById(tourId);
+  if (!product) {
+    return next(new AppError('Tour wasn,t found', 404));
+  }
+  const newTour = {
+    tour: product._id,
+    quantity: quantity,
+    price: product.price,
+  }
+  userTest.cart.push(newTour);
+  await userTest.save();
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      user: userTest,
+    },
+  });
+})
 
 exports.myInfo = catchAsync(async (req, res, next) => {
   const { id } = req.user;

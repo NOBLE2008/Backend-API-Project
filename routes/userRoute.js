@@ -10,7 +10,7 @@ const {
   getLoggedInUser,
 } = require('../controller/authController');
 
-const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload, getMyPhoto, getPhotoById } = require('../controller/userController');
+const { getAllUsers, updateEntireUser, getUserById, myInfo, photoUpload, getMyPhoto, getPhotoById, addTourToCart } = require('../controller/userController');
 const {
   isAuth,
 } = require('../middlewares/authMiddleware');

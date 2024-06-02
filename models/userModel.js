@@ -43,7 +43,8 @@ const userSchema = new mongoose.Schema({
             default: 1,
           },
         }
-      ]
+      ],
+      default: [],
     },
     confirmPassword: {
         type: String,

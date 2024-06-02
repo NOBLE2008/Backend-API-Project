@@ -6,7 +6,7 @@ const Users = require('../models/userModel');
 const Reviews = require('../models/reviewModel');
 
 dotenv.config()
-dbConnect(process.env.DATABASE);
+dbConnect(process.env.MONGODB.replace('<password>', process.env.MONGO_PASSWORD).replace('<username>', process.env.MONGO_USER));
 
 // Read JSON File
 const tours = JSON.parse(
@@ -21,11 +21,6 @@ const admin = {
   confirmPassword: process.env.ADMIN_CONFIRMPASSWORD,
   role: "Admin",
   permissions: ['Super Administrator'],
-  cart: [{
-    tour: '5c88fa8cf4afda39709c2955',
-    quantity: 1,
-    price: 497
-  }]
 }
 
 //Delete Tours from DB
