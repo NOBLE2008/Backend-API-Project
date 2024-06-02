@@ -76,6 +76,13 @@ app.use('/api/v2/users', userRouter);
 app.use('/api/v2/reviews', reviewRouter);
 app.use('/api/v2/bookings', bookingRouter)
 
+app.use('/check-server', (req, res) => {
+  res.status(200).json({
+    status: 'Success',
+    message: 'Server is up and running'
+  })
+})
+
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
