@@ -19,6 +19,7 @@ const { photoUploader } = require('../middlewares/uploadPhoto');
 const router = express.Router();
 //Fixed bug in myPhoto handler by adding the isAuth middleware
 router.get('/photo/:id', getPhotoById)
+router.post('/add-to-cart', isAuth, addTourToCart)
 router.get('/myPhoto', isAuth, getMyPhoto)
 router.get('/me', isAuth, myInfo)
 router.get(
