@@ -9,6 +9,7 @@ const dbConnect = (connectionString) => {
     })
     .catch((err) => {
       console.log(err);
+      console.log(connectionString);
     });
 };
 

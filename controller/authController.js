@@ -136,7 +136,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('There is no user with this email', 404));
   }
   const token = await user.generatePasswordResetToken();
-  const resetUrl = `http://localhost:${process.env.PORT}/api/v2/users/reset-password/${token}`;
+  const resetUrl = `${req.protocol}://localhost:5000/api/v2/users/reset-password/${token}`;
   const emailText = `A password reset has been initiated. click on the link below to reset your password. ${resetUrl}`;
   const emailSubject = 'Password Reset';
   fs.readFile(`${__dirname}/../Emails/passwordreset.html`, 'utf-8', (err, data) => {

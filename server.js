@@ -11,7 +11,8 @@ process.on('uncaughtException', (err) => {
 });
 
 //Always store sensitive info like Secret key, Database Password, API Keys in the environment variables
-dbConnect(process.env.DATABASE)
+const connectionString = process.env.MONGODB.replace('<password>', process.env.MONGO_PASSWORD).replace('<username>', process.env.MONGO_USER);
+dbConnect(connectionString)
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
