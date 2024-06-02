@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const catchAsync = require('./catchAsync');
 const AppError = require('./appError');
 // create reusable transportnpmer object using the default SMTP transport
 module.exports = class Email{
