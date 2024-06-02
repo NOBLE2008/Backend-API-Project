@@ -76,7 +76,7 @@ app.use('/api/v2/users', userRouter);
 app.use('/api/v2/reviews', reviewRouter);
 app.use('/api/v2/bookings', bookingRouter)
 
-app.use('/check-server', (req, res) => {
+app.use('/', (req, res) => {
   res.status(200).json({
     status: 'Success',
     message: 'Server is up and running'
