@@ -133,7 +133,12 @@ exports.getTourImages = catchAsync(async (req, res, next) => {
 
 //Post new tour
 exports.addNewTour = catchAsync(async (req, res, next) => {
-  const tour = (await Tours.create(req.body)).populate({
+  const userQuery = {
+    ...req.body,
+    ratingsAverage: 0,
+    ratingsQuantity: 0,
+  }
+  const tour = (await Tours.create(userQuery)).populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
   });
