@@ -138,7 +138,8 @@ exports.addNewTour = catchAsync(async (req, res, next) => {
     ratingsAverage: 0,
     ratingsQuantity: 0,
   }
-  const tour = await Tours.create(userQuery).populate({
+  const newTour = (await Tours.create(userQuery))
+  const tour = await Tours.findOne({name: req?.body?.name}).populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
   });
